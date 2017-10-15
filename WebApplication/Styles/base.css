@@ -1,0 +1,20 @@
+﻿body {
+    margin: 0;
+    font-family: "Arial";
+    font-size: 14px;
+}
+
+a {
+    text-decoration: none;
+}
+
+hr {
+    margin: 20px 0;
+    border: 0;
+    border-top: 1px solid #e6e6e6;
+}
+
+.footer {
+    text-align: center;
+    clear: both;
+}

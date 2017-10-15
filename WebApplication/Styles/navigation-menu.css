@@ -1,0 +1,33 @@
+﻿.page-header {
+    background-color: #262626;
+}
+
+.page-header a:hover {
+    color: #fff
+}
+
+.navigation-menu {
+    min-height: 50px;
+}
+
+.navigation-menu > ul {
+    display: inline-block;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navigation-menu > ul > li {
+    display: inline-block;
+}
+
+.navigation-menu > ul > li > a {
+    padding: 15px;
+    line-height: 20px;
+    display: inline-block;
+    color: #a6a6a6;
+}
+
+.navigation-account {
+    float: right;
+}

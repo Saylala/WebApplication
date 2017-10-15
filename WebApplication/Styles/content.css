@@ -1,0 +1,16 @@
+﻿.content-positioner {
+    width: 1200px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.content {
+    margin: 0;
+    font-size: 20px;
+    padding: 0 50px;
+}
+
+.content > p {
+    padding: 0 0 15px;
+    margin: 20px 0;
+}

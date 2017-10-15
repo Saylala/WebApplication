@@ -1,0 +1,18 @@
+﻿.gallery {
+    text-align: center;
+    padding-top: 20px;
+}
+
+.gallery > img {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 5px;
+    width: 25%;
+    height: auto;
+    border: 2px solid #bfbfbf;
+    cursor: pointer;
+}
+
+.gallery > img:hover {
+    border: 2px solid #737373;
+}
