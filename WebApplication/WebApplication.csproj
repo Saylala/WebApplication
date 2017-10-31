@@ -185,10 +185,8 @@
     <Content Include="Images\Galaxy.jpg" />
     <Content Include="Images\Lake.jpg" />
     <Content Include="Images\Planet.jpg" />
-    <Content Include="Styles\base.css" />
     <Content Include="Styles\content.css" />
     <Content Include="Styles\gallery.css" />
-    <Content Include="Styles\navigation-menu.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\bootstrap.js" />
@@ -205,6 +203,7 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
+    <Content Include="Styles\header.css" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -216,7 +215,6 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Account\ConfirmEmail.cshtml" />
