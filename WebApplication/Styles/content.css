@@ -16,9 +16,20 @@ a {
     padding: 0;
 }
 
-.content > p {
-    padding: 0 0 15px;
-    margin: 20px 0;
+.content > .photo-container {
+    float: left;
+    margin: 0 10px 10px 0;
+    border: 2px solid #bfbfbf;
+}
+
+.content > .photo-container > .description {
+    font-size: 12px;
+    text-align: center;
+    padding: 10px;
+}
+
+.content > .media > a {
+    margin: 5px;
 }
 
 .positioner {

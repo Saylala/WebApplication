@@ -184,6 +184,11 @@
     <Content Include="Images\City.jpg" />
     <Content Include="Images\Galaxy.jpg" />
     <Content Include="Images\Lake.jpg" />
+    <Content Include="Images\Media\GitHub.png" />
+    <Content Include="Images\Media\Gmail.png" />
+    <Content Include="Images\Media\Telegram.png" />
+    <Content Include="Images\Media\VK.png" />
+    <Content Include="Images\Photo.jpg" />
     <Content Include="Images\Planet.jpg" />
     <Content Include="Styles\content.css" />
     <Content Include="Styles\gallery.css" />
