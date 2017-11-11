@@ -4,24 +4,35 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title</title>
-    @Styles.Render("~/Styles/css")
+    @Styles.Render("~/Styles/bootstrap")
+    @Styles.Render("~/Styles/font-awesome")
+    @Styles.Render("~/Styles/custom")
+    @*@Scripts.Render("~/bundles/modernizr")*@
 </head>
 <body>
-    <div class="wrapper">
-        <div class="header">
-            <div class="positioner navigation-menu">
-                <ul>
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("Gallery", "Gallery", "Home")</li>
-                </ul>
-            </div>
+    <div class="navbar navbar-inverse navbar-static-top">
+        <div class="container">
+            <ul class="nav navbar-nav">
+                <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                <li>@Html.ActionLink("Gallery", "Gallery", "Home")</li>
+            </ul>
+            @*@Html.Partial("_LoginPartial")*@
         </div>
+    </div>
+    <div class="container body-content">
         @RenderBody()
-        <div class="buffer"></div>
     </div>
-    <div class="footer">
-        <hr />
-        &copy; @DateTime.Now.Year - Some useless footer
-    </div>
+    <footer class="footer">
+        <div class="container">
+            <hr />
+            <p class="text-muted">
+                &copy; @DateTime.Now.Year - Some useless footer.
+            </p>
+        </div>
+    </footer>
+
+    @*@Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/bootstrap")
+        @RenderSection("scripts", required: false)*@
 </body>
 </html>

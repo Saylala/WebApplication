@@ -18,7 +18,11 @@ namespace WebApplication
 
             //bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include("~/Scripts/bootstrap.js", "~/Scripts/respond.js"));
 
-            bundles.Add(new StyleBundle("~/Styles/css").Include("~/Styles/*.css"));
+            bundles.Add(new StyleBundle("~/Styles/bootstrap")
+                .Include("~/Styles/bootstrap.css")
+                .Include("~/Styles/bootstrap-theme.css"));
+            bundles.Add(new StyleBundle("~/Styles/font-awesome").Include("~/Styles/font-awesome.css"));
+            bundles.Add(new StyleBundle("~/Styles/custom").Include("~/Styles/custom.css"));
         }
     }
 }
