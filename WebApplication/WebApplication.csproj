@@ -175,6 +175,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\GalleryModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -187,7 +188,7 @@
     <Content Include="Images\Lake.jpg" />
     <Content Include="Images\Photo.jpg" />
     <Content Include="Images\Planet.jpg" />
-    <Content Include="Styles\bootstrap-theme.css" />
+    <Content Include="Scripts\gallery.js" />
     <Content Include="Styles\bootstrap.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
@@ -212,6 +213,7 @@
     <Content Include="Scripts\_references.js" />
     <Content Include="Styles\custom.css" />
     <Content Include="Styles\font-awesome.css" />
+    <Content Include="Styles\gallery.css" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

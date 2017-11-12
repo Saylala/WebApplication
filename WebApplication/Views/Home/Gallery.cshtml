@@ -1,27 +1,49 @@
-﻿@{
+﻿@using WebApplication.Models;
+@using Newtonsoft.Json
+@model GalleryModel
+
+@{
     ViewBag.Title = "Gallery";
 }
 
+@Styles.Render("~/Styles/gallery")
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/Scripts/gallery")
+<script type="text/javascript">
+    initGallery(@Html.Raw(JsonConvert.SerializeObject(Model)));
+</script>
+
 <div class="container">
-    <div class="row">
-        <div class="col-xs-3">
-            <div class="thumbnail">
-                <img src="/Images/City.jpg" alt="Lights">
+    <div class="image-previews">
+        <div class="row vertical-align">
+            <div class="col-xs-1">
+                <button type="button" class="preview-button" id="preview-previous">
+                    <svg width="44" height="60">
+                        <polyline points="30 10 10 30 30 50" stroke="#999999" stroke-width="4" stroke-linecap="butt" fill="none" stroke-linejoin="round"></polyline>
+                    </svg>
+                </button>
             </div>
-        </div>
-        <div class="col-xs-3">
-            <div class="thumbnail">
-                <img src="/Images/Galaxy.jpg" alt="Lights">
+            <div class="col-xs-3 vertical-align">
+                <div class="thumbnail">
+                    <img src="/Images/City.jpg" alt="">
+                </div>
             </div>
-        </div>
-        <div class="col-xs-3">
-            <div class="thumbnail">
-                <img src="/Images/Lake.jpg" alt="Lights">
+            <div class="col-xs-3">
+                <div class="thumbnail">
+                    <img src="/Images/Galaxy.jpg" alt="">
+                </div>
             </div>
-        </div>
-        <div class="col-xs-3">
-            <div class="thumbnail">
-                <img src="/Images/Planet.jpg" alt="Lights">
+            <div class="col-xs-3">
+                <div class="thumbnail">
+                    <img src="/Images/Lake.jpg" alt="">
+                </div>
+            </div>
+            <div class="col-xs-1">
+                <button type="button" class="preview-button" id="preview-next">
+                    <svg width="44" height="60">
+                        <polyline points="14 10 34 30 14 50" stroke="#999999" stroke-width="4" stroke-linecap="butt" fill="none" stroke-linejoin="round"></polyline>
+                    </svg>
+                </button>
             </div>
         </div>
     </div>

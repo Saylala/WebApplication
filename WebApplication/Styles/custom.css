@@ -27,9 +27,11 @@ hr {
 }
 
 .photo {
+    padding: 4px;
     float: left;
     margin: 0 10px 10px 0;
-    border: 2px solid #bfbfbf;
+    border: 1px solid #dddddd;
+    border-radius: 4px;
 }
 
 .photo .description {
@@ -46,7 +48,6 @@ hr {
     text-decoration: none !important;
     color: white;
     margin: 5px 2px;
-    /*border-radius: 50%;*/
 }
 
 .fa:hover {
@@ -68,4 +69,10 @@ hr {
 
 .fa-github {
     background: #171515;
+}
+
+
+.vertical-align {
+    display: flex;
+    align-items: center;
 }
