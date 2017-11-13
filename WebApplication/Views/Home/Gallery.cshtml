@@ -7,7 +7,6 @@
 }
 
 @Styles.Render("~/Styles/gallery")
-@Scripts.Render("~/bundles/jquery")
 @Scripts.Render("~/Scripts/gallery")
 <script type="text/javascript">
     initGallery(@Html.Raw(JsonConvert.SerializeObject(Model)));

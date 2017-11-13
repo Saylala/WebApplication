@@ -4,18 +4,18 @@ var maxImages;
 var maximized = false;
 var startIndex = 0;
 
-var leftArrow = '<button type="button" class="gallery-button previous-button" id="previous">' +
-    '<svg width="44" height="60">' +
-    '<polyline points="30 10 10 30 30 50" stroke="#999999" stroke-width="4" stroke-linecap="butt" fill="none" stroke-linejoin="round"/>' +
-    '</svg></button>';
-var rightArrow = '<button type="button" class="gallery-button next-button" id="next">' +
-    '<svg width="44" height="60">' +
-    '<polyline points="14 10 34 30 14 50" stroke="#999999" stroke-width="4" stroke-linecap="butt" fill="none" stroke-linejoin="round"/>' +
-    '</svg></button>';
-var closeX = '<button type="button" class="gallery-button close-button" id="close">' +
-    '<svg width="30" height="30">' +
-    '<g stroke="#999999" stroke-width="4"><line x1="5" y1="5" x2="25" y2="25"/><line x1="5" y1="25" x2="25" y2="5"/></g>' +
-    '</svg></button>';
+var leftArrow = "<button type='button' class='gallery-button previous-button' id='previous'>" +
+    "<svg width='44' height='60'>" +
+    "<polyline points='30 10 10 30 30 50' stroke='#999999' stroke-width='4' stroke-linecap='butt' fill='none' stroke-linejoin='round'/>" +
+    "</svg></button>";
+var rightArrow = "<button type='button' class='gallery-button next-button' id='next'>" +
+    "<svg width='44' height='60'>" +
+    "<polyline points='14 10 34 30 14 50' stroke='#999999' stroke-width='4' stroke-linecap='butt' fill='none' stroke-linejoin='round'/>" +
+    "</svg></button>";
+var closeX = "<button type='button' class='gallery-button close-button' id='close'>" +
+    "<svg width='30' height='30'>" +
+    "<g stroke='#999999' stroke-width='4'><line x1='5' y1='5' x2='25' y2='25'/><line x1='5' y1='25' x2='25' y2='5'/></g>" +
+    "</svg></button>";
 
 function initGallery(model) {
     maxImages = model.MaxImages;
@@ -30,36 +30,61 @@ function indexOf(arr, x) {
     return -1;
 }
 
+function getOverlay() {
+    var div = document.createElement("div");
+    div.id = "overlay";
+    return div;
+}
+
+function getHolder(src) {
+    var div = document.createElement("div");
+    div.id = "holder";
+    div.innerHTML += leftArrow + rightArrow + closeX;
+    div.appendChild(getImageWithSource(images[indexOf(previews, src)]));
+    div.appendChild(getLoading());
+    return div;
+}
+
 function getImageWithSource(src) {
-    return "<img id='image-large' src='" + src + "' onload='imageLoaded();' style='visibility: hidden;'/>" +
-        "<div id='loading' class='loader'></div>";
+    var img = document.createElement("img");
+    img.id = "image-large";
+    img.src = src;
+    img.onload = imageLoaded;
+    img.style.visibility = "hidden";
+    return img;
+}
+
+function getLoading() {
+    var div = document.createElement("div");
+    div.id = "loading";
+    div.class = "loader";
+    return div;
 }
 
 function preloadImages(arrayOfImages) {
-    $(arrayOfImages).each(function () {
-        new Image().src = this;
-    });
+    for (var i = 0; i < arrayOfImages.length; i++) {
+        new Image().src = arrayOfImages[i];
+    }
 }
 
 function imageLoaded() {
-    $("#loading").remove();
-    $("#image-large").css("visibility", "inherit");
+    document.querySelector("#loading").remove();
+    document.querySelector("#image-large").style.visibility = "inherit";
 }
 
 function switchImage(delta) {
-    var imageLarge = $("#image-large");
-    var nextImage = indexOf(images, imageLarge.attr("src")) + delta;
+    var imageLarge = document.querySelector("#image-large");
+    var nextImage = indexOf(images, imageLarge.attributes.src.value) + delta;
     if (nextImage < 0 || nextImage >= images.length)
         return;
-    $("#image-large").remove();
-    $("#holder").append(getImageWithSource(images[nextImage]));
-    imageLarge.css("visibility", "hidden");
-    imageLarge.attr("src", images[indexOf(images, imageLarge.attr("src")) + delta]);
+    document.querySelector("#image-large").remove();
+    document.querySelector("#holder").appendChild(getImageWithSource(images[nextImage]));
+    document.querySelector("#holder").appendChild(getLoading());
 }
 
 function closeOverlay() {
-    $("#overlay").remove();
-    $("#holder").remove();
+    document.querySelector("#overlay").remove();
+    document.querySelector("#holder").remove();
     maximized = false;
 };
 
@@ -71,36 +96,31 @@ window.onkeydown = function (event) {
     var delta = event.keyCode === 37 ? -1 : 1;
     if (maximized)
         switchImage(delta);
-    switchPreview(delta);
 };
 
 function bindEvents() {
-    $(".row > div > img.img-thumbnail").click(function (event) {
-        maximized = true;
-        $(document.body).append(
-            "<div id='overlay'></div>" +
-            "<div id='holder'>" +
-            leftArrow +
-            getImageWithSource(images[indexOf(previews, event.target.src)]) +
-            rightArrow +
-            closeX +
-            "</div>"
-        );
-        $("#overlay").click(closeOverlay);
-        $("#close").click(closeOverlay);
-        $("#previous").click(function () {
-            switchImage(-1);
-        });
-        $("#next").click(function () {
-            switchImage(1);
-        });
-    });
+    var imagePreviews = document.querySelectorAll(".row > div > img.img-thumbnail");
+    for (var i = 0; i < imagePreviews.length; i++) {
+        imagePreviews[i].onclick = function(event) {
+            maximized = true;
+            document.body.appendChild(getOverlay());
+            document.body.appendChild(getHolder(event.target.src));
+            document.querySelector("#overlay").onclick = closeOverlay;
+            document.querySelector("#close").onclick = closeOverlay;
+            document.querySelector("#previous").onclick = function() {
+                switchImage(-1);
+            };
+            document.querySelector("#next").onclick = function() {
+                switchImage(1);
+            };
+        };
+    }
 }
 
-$(document).ready(function () {
+document.addEventListener("DOMContentLoaded", function () {
     preloadImages(previews);
-    var imagePreviews = $(".row > div > img.img-thumbnail");
+    var imagePreviews = document.querySelectorAll(".row > div > img.img-thumbnail");
     for (var i = 0; i < maxImages; i++)
-        $(imagePreviews[i]).attr("src", previews[i + startIndex]);
+        imagePreviews[i].attributes.src = previews[i + startIndex];
     bindEvents();
 });
