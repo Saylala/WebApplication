@@ -46,16 +46,6 @@ function imageLoaded() {
     $("#image-large").css("visibility", "inherit");
 }
 
-function switchPreview(delta) {
-    var index = startIndex + delta;
-    if (index < 0 || index + maxImages > images.length)
-        return;
-    startIndex = index;
-    var imagePreviews = $(".image-previews > .row > div > .thumbnail > img");
-    for (var i = 0; i < maxImages; i++)
-        $(imagePreviews[i]).attr("src", previews[i + startIndex]);
-}
-
 function switchImage(delta) {
     var imageLarge = $("#image-large");
     var nextImage = indexOf(images, imageLarge.attr("src")) + delta;
@@ -85,7 +75,7 @@ window.onkeydown = function (event) {
 };
 
 function bindEvents() {
-    $(".image-previews > .row > div > .thumbnail > img").click(function (event) {
+    $(".row > div > img.img-thumbnail").click(function (event) {
         maximized = true;
         $(document.body).append(
             "<div id='overlay'></div>" +
@@ -100,26 +90,16 @@ function bindEvents() {
         $("#close").click(closeOverlay);
         $("#previous").click(function () {
             switchImage(-1);
-            switchPreview(-1);
         });
         $("#next").click(function () {
             switchImage(1);
-            switchPreview(1);
         });
-    });
-
-    $("#preview-previous").click(function () {
-        switchPreview(-1);
-    });
-
-    $("#preview-next").click(function () {
-        switchPreview(1);
     });
 }
 
 $(document).ready(function () {
     preloadImages(previews);
-    var imagePreviews = $(".image-previews > .row > div > .thumbnail > img");
+    var imagePreviews = $(".row > div > img.img-thumbnail");
     for (var i = 0; i < maxImages; i++)
         $(imagePreviews[i]).attr("src", previews[i + startIndex]);
     bindEvents();

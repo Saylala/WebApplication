@@ -26,15 +26,12 @@ hr {
     margin-top: 0;
 }
 
-.photo {
-    padding: 4px;
+.img-float-left {
     float: left;
     margin: 0 10px 10px 0;
-    border: 1px solid #dddddd;
-    border-radius: 4px;
 }
 
-.photo .description {
+.img-float-left .description {
     font-size: 12px;
     text-align: center;
     padding: 10px;
@@ -69,10 +66,4 @@ hr {
 
 .fa-github {
     background: #171515;
-}
-
-
-.vertical-align {
-    display: flex;
-    align-items: center;
 }

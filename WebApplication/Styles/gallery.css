@@ -19,6 +19,9 @@
     z-index: 10000;
 }
 
+.gallery-item {
+    margin-bottom: 10px;    
+}
 .gallery-button {
     position: fixed;
     right: 0;
@@ -36,22 +39,14 @@
     height: 30px;
 }
 
-.next-button,
-.previous-button {
-    top: 50%;
-}
-
 .next-button {
+    top: 50%;
     right: 2%;
 }
 
 .previous-button {
+    top: 50%;
     left: 2%;
-}
-
-.preview-button {
-    border: 0;
-    background-color: #ffffff;
 }
 
 .loader {

@@ -183,11 +183,19 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\fontawesome-webfont.svg" />
-    <Content Include="Images\City.jpg" />
-    <Content Include="Images\Galaxy.jpg" />
-    <Content Include="Images\Lake.jpg" />
+    <Content Include="Images\1.jpg" />
+    <Content Include="Images\1_thumbnail.jpg" />
+    <Content Include="Images\2.jpg" />
+    <Content Include="Images\2_thumbnail.jpg" />
+    <Content Include="Images\3.jpg" />
+    <Content Include="Images\3_thumbnail.jpg" />
+    <Content Include="Images\4.jpg" />
+    <Content Include="Images\4_thumbnail.jpg" />
+    <Content Include="Images\5.jpg" />
+    <Content Include="Images\5_thumbnail.jpg" />
+    <Content Include="Images\6.jpg" />
+    <Content Include="Images\6_thumbnail.jpg" />
     <Content Include="Images\Photo.jpg" />
-    <Content Include="Images\Planet.jpg" />
     <Content Include="Scripts\gallery.js" />
     <Content Include="Styles\bootstrap.css" />
     <Content Include="favicon.ico" />
