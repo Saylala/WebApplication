@@ -57,7 +57,6 @@ function getImageWithSource(src) {
 function getLoading() {
     var div = document.createElement("div");
     div.id = "loading";
-    div.class = "loader";
     return div;
 }
 
@@ -67,24 +66,30 @@ function preloadImages(arrayOfImages) {
     }
 }
 
+function remove(element) {
+    if (element)
+        element.parentNode.removeChild(element);
+}
+
 function imageLoaded() {
-    document.querySelector("#loading").remove();
-    document.querySelector("#image-large").style.visibility = "inherit";
+    remove(document.querySelector("#loading"));
+    document.querySelector("#image-large").style.visibility = "visible";
 }
 
 function switchImage(delta) {
     var imageLarge = document.querySelector("#image-large");
-    var nextImage = indexOf(images, imageLarge.attributes.src.value) + delta;
+    var nextImage = indexOf(images, imageLarge.getAttribute("src")) + delta;
     if (nextImage < 0 || nextImage >= images.length)
         return;
-    document.querySelector("#image-large").remove();
+    remove(document.querySelector("#image-large"));
+    remove(document.querySelector("#loading"));
     document.querySelector("#holder").appendChild(getImageWithSource(images[nextImage]));
     document.querySelector("#holder").appendChild(getLoading());
 }
 
 function closeOverlay() {
-    document.querySelector("#overlay").remove();
-    document.querySelector("#holder").remove();
+    remove(document.querySelector("#overlay"));
+    remove(document.querySelector("#holder"));
     maximized = false;
 };
 
@@ -101,26 +106,48 @@ window.onkeydown = function (event) {
 function bindEvents() {
     var imagePreviews = document.querySelectorAll(".row > div > img.img-thumbnail");
     for (var i = 0; i < imagePreviews.length; i++) {
-        imagePreviews[i].onclick = function(event) {
+        imagePreviews[i].onclick = function (event) {
+            event = event || window.event;
+            var target = event.target || event.srcElement;
             maximized = true;
             document.body.appendChild(getOverlay());
-            document.body.appendChild(getHolder(event.target.src));
+            document.body.appendChild(getHolder(target.src));
             document.querySelector("#overlay").onclick = closeOverlay;
             document.querySelector("#close").onclick = closeOverlay;
-            document.querySelector("#previous").onclick = function() {
+            document.querySelector("#previous").onclick = function () {
                 switchImage(-1);
             };
-            document.querySelector("#next").onclick = function() {
+            document.querySelector("#next").onclick = function () {
                 switchImage(1);
             };
         };
     }
 }
 
-document.addEventListener("DOMContentLoaded", function () {
+var handler = function () {
     preloadImages(previews);
     var imagePreviews = document.querySelectorAll(".row > div > img.img-thumbnail");
     for (var i = 0; i < maxImages; i++)
-        imagePreviews[i].attributes.src = previews[i + startIndex];
+        imagePreviews[i].setAttribute("src", previews[i + startIndex]);
     bindEvents();
-});
+};
+
+if (document.addEventListener) {
+    // Mozilla, Opera and WebKit
+    document.addEventListener("DOMContentLoaded", handler);
+}
+else if (document.attachEvent) {
+    // If Internet Explorer, the event model is used
+    document.attachEvent("onreadystatechange", function () {
+        if (document.readyState === "complete") {
+            handler();
+        }
+    });
+} else {
+    // A fallback to window.onload, that will always work
+    var oldOnload = window.onload;
+    window.onload = function () {
+        oldOnload && oldOnload();
+        handler();
+    }
+}
