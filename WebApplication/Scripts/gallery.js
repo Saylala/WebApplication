@@ -4,18 +4,9 @@ var maxImages;
 var maximized = false;
 var startIndex = 0;
 
-var leftArrow = "<button type='button' class='gallery-button previous-button' id='previous'>" +
-    "<svg width='44' height='60'>" +
-    "<polyline points='30 10 10 30 30 50' stroke='#999999' stroke-width='4' stroke-linecap='butt' fill='none' stroke-linejoin='round'/>" +
-    "</svg></button>";
-var rightArrow = "<button type='button' class='gallery-button next-button' id='next'>" +
-    "<svg width='44' height='60'>" +
-    "<polyline points='14 10 34 30 14 50' stroke='#999999' stroke-width='4' stroke-linecap='butt' fill='none' stroke-linejoin='round'/>" +
-    "</svg></button>";
-var closeX = "<button type='button' class='gallery-button close-button' id='close'>" +
-    "<svg width='30' height='30'>" +
-    "<g stroke='#999999' stroke-width='4'><line x1='5' y1='5' x2='25' y2='25'/><line x1='5' y1='25' x2='25' y2='5'/></g>" +
-    "</svg></button>";
+var leftArrow = "<div id='previous' class='gallery-button previous-button fa fa-chevron-left'></div>";
+var rightArrow = "<div id='next' class='gallery-button next-button fa fa-chevron-right'></div>";
+var closeX = "<div id='close' class='gallery-button close-button fa fa-times'></div>";
 
 function initGallery(model) {
     maxImages = model.MaxImages;
