@@ -9,6 +9,7 @@
     z-index: 9999;
 }
 
+#gallery-help,
 #image-large {
     position: fixed;
     top: 50%;
@@ -17,6 +18,12 @@
     max-width: 95%;
     max-height: 95%;
     z-index: 10000;
+}
+
+@media (max-width: 480px) {
+    #gallery-help {
+        width: 90%;
+    }
 }
 
 #loading {
@@ -34,8 +41,13 @@
     animation: spin 2s linear infinite;
 }
 
-.gallery-item {
-    margin-bottom: 10px;
+.margin-bottom {
+    margin: 0 0 10px 0;
+}
+
+.gallery-item:hover {
+    opacity: 0.7;
+    cursor: pointer;
 }
 
 .gallery-button {
@@ -45,8 +57,13 @@
     z-index: 10001;
     cursor: pointer;
     padding: 0;
+    margin: 0;
     border: 0;
     background-color: transparent;
+}
+
+.modal-header > .fa {
+    color: inherit;
 }
 
 .close-button {

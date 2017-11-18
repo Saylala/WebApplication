@@ -2,6 +2,7 @@ var images;
 var previews;
 var maxImages;
 var maximized = false;
+var showingHelp = false;
 var startIndex = 0;
 
 var leftArrow = "<div id='previous' class='gallery-button previous-button fa fa-chevron-left'></div>";
@@ -24,6 +25,28 @@ function indexOf(arr, x) {
 function getOverlay() {
     var div = document.createElement("div");
     div.id = "overlay";
+    return div;
+}
+
+function getHelp() {
+    var modal =
+        "<div id='gallery-help' class='modal-content'>" +
+        "<div class='modal-header'>" +
+        "<div id='close' class='gallery-button close-button fa fa-times'></div>" +
+        "<h4 class='modal-title'>Gallery Controls:</h4>" +
+        "</div>" +
+        "<div class='modal-body'>" +
+        "<ul>" +
+        "<li>Click on preview to view full image.</li>" +
+        "<li>Use left arrow to move to previous image.</li>" +
+        "<li>Use right arrow to move to next image.</li>" +
+        "<li>Use ESC button to exit gallery.</li>" +
+        "</ul>" +
+        "</div>" +
+        "</div>";
+    var div = document.createElement("div");
+    div.id = "holder";
+    div.innerHTML += modal;
     return div;
 }
 
@@ -84,15 +107,21 @@ function closeOverlay() {
     maximized = false;
 };
 
-window.onkeydown = function (event) {
-    if (event.keyCode === 27 && maximized)
-        closeOverlay();
-    if (event.keyCode !== 37 && event.keyCode !== 39)
+function closeHelp() {
+    remove(document.querySelector("#overlay"));
+    remove(document.querySelector("#holder"));
+    showingHelp = false;
+}
+
+function showHelp() {
+    if (showingHelp)
         return;
-    var delta = event.keyCode === 37 ? -1 : 1;
-    if (maximized)
-        switchImage(delta);
-};
+    document.body.appendChild(getOverlay());
+    document.body.appendChild(getHelp());
+    document.querySelector("#overlay").onclick = closeHelp;
+    document.querySelector("#close").onclick = closeHelp;
+    showingHelp = true;
+}
 
 function bindEvents() {
     var imagePreviews = document.querySelectorAll(".row > div > img.img-thumbnail");
@@ -115,6 +144,20 @@ function bindEvents() {
     }
 }
 
+var keyHandler = function (event) {
+    if (event.keyCode === 112 && !maximized)
+        showHelp();
+    if (event.keyCode === 27 && maximized)
+        closeOverlay();
+    if (event.keyCode === 27 && showingHelp)
+        closeHelp();
+    if (event.keyCode !== 37 && event.keyCode !== 39)
+        return;
+    var delta = event.keyCode === 37 ? -1 : 1;
+    if (maximized)
+        switchImage(delta);
+};
+
 var handler = function () {
     preloadImages(previews);
     var imagePreviews = document.querySelectorAll(".row > div > img.img-thumbnail");
@@ -126,6 +169,7 @@ var handler = function () {
 if (document.addEventListener) {
     // Mozilla, Opera and WebKit
     document.addEventListener("DOMContentLoaded", handler);
+    document.addEventListener("keydown", keyHandler); 
 }
 else if (document.attachEvent) {
     // If Internet Explorer, the event model is used
@@ -134,6 +178,7 @@ else if (document.attachEvent) {
             handler();
         }
     });
+    document.attachEvent("onkeydown", keyHandler);
 } else {
     // A fallback to window.onload, that will always work
     var oldOnload = window.onload;
