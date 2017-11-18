@@ -22,6 +22,40 @@ body {
     font-size: 20px;
 }
 
+@media (min-width: 2560px) {
+    body {
+        margin-bottom: 70px;
+        font-size: 35px;
+    }
+
+    .footer {
+        height: 70px;
+    }
+
+    .home {
+        font-size: inherit;
+    }
+
+    .headline {
+        font-size: inherit;
+    }
+
+    .caption {
+        display: none;
+    }
+}
+
+@media (min-width: 3440px) {
+    body {
+        margin-bottom: 100px;
+        font-size: 50px;
+    }
+
+    .footer {
+        height: 100px;
+    }
+}
+
 .home > h2 {
     margin-top: 0;
 }

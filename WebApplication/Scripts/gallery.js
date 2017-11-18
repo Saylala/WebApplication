@@ -50,21 +50,24 @@ function getHelp() {
     return div;
 }
 
-function getHolder(src) {
+function getHolder() {
     var div = document.createElement("div");
     div.id = "holder";
     div.innerHTML += leftArrow + rightArrow + closeX;
-    div.appendChild(getImageWithSource(images[indexOf(previews, src)]));
     div.appendChild(getLoading());
     return div;
 }
 
 function getImageWithSource(src) {
     var img = document.createElement("img");
+    // IE8 bullshit
+    img.onreadystatechange = function () {
+        if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete")
+            imageLoaded();
+    }
     img.id = "image-large";
     img.src = src;
-    img.onload = imageLoaded;
-    img.style.visibility = "hidden";
+    img.cssText = "visibility: hidden;";
     return img;
 }
 
@@ -87,7 +90,9 @@ function remove(element) {
 
 function imageLoaded() {
     remove(document.querySelector("#loading"));
-    document.querySelector("#image-large").style.visibility = "visible";
+    var image = document.querySelector("#image-large");
+    if (image)
+        image.cssText = "visibility: visible;";
 }
 
 function switchImage(delta) {
@@ -131,7 +136,10 @@ function bindEvents() {
             var target = event.target || event.srcElement;
             maximized = true;
             document.body.appendChild(getOverlay());
-            document.body.appendChild(getHolder(target.src));
+            var holder = getHolder();
+            document.body.appendChild(holder);
+            holder.appendChild(getImageWithSource(images[indexOf(previews, target.src)]));
+
             document.querySelector("#overlay").onclick = closeOverlay;
             document.querySelector("#close").onclick = closeOverlay;
             document.querySelector("#previous").onclick = function () {
@@ -179,11 +187,4 @@ else if (document.attachEvent) {
         }
     });
     document.attachEvent("onkeydown", keyHandler);
-} else {
-    // A fallback to window.onload, that will always work
-    var oldOnload = window.onload;
-    window.onload = function () {
-        oldOnload && oldOnload();
-        handler();
-    }
 }
