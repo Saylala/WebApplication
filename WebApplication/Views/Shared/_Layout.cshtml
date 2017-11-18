@@ -13,7 +13,7 @@
         <div class="container">
             <ul class="nav navbar-nav">
                 <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                <li>@Html.ActionLink("Gallery", "Gallery", "Home")</li>
+                <li>@Html.ActionLink("Gallery", "Index", "Gallery")</li>
             </ul>
             @*@Html.Partial("_LoginPartial")*@
         </div>
@@ -23,13 +23,11 @@
     </div>
     <footer class="footer">
         <div class="container">
-            <p>
-                &copy; @DateTime.Now.Year - Some useless footer.
-            </p>
+            <p>&copy; @DateTime.Now.Year - Some useless footer.</p>
         </div>
     </footer>
 
-@*@Scripts.Render("~/bundles/bootstrap")
-  @RenderSection("scripts", required: false)*@
+@*@Scripts.Render("~/bundles/bootstrap")*@
+@*@RenderSection("scripts", required: false)*@
 </body>
 </html>
