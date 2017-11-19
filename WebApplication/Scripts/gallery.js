@@ -59,8 +59,10 @@ function getHolder(src) {
     div.id = "holder";
     div.innerHTML += leftArrow + rightArrow + closeX;
     var loading = getLoading();
-    div.appendChild(loading);
-    div.appendChild(getImageWithSource(indexOf(previews, src), loading));
+    var index = indexOf(previews, src);
+    if (imageLoaded[index] === false)
+        div.appendChild(loading);
+    div.appendChild(getImageWithSource(index, loading));
     return div;
 }
 
@@ -81,15 +83,21 @@ function getLoading() {
     return div;
 }
 
-function preloadImages(arrayOfImages) {
-    for (var i = 0; i < arrayOfImages.length; i++) {
-        console.log(arrayOfImages[i]);
+function preloadThumbnails(arrayOfImages) {
+    for (var i = 0; i < arrayOfImages.length; i++)
         new Image().src = arrayOfImages[i];
+}
+
+function preloadImage(imageIndex) {
+    var image = new Image();
+    image.onload = function () {
+        imageLoaded(null, imageIndex, null);
     }
+    image.src = images[imageIndex];
 }
 
 function remove(element) {
-    if (element)
+    if (element && element.parentNode)
         element.parentNode.removeChild(element);
 }
 
@@ -116,8 +124,9 @@ function imageLoaded(image, imageIndex, loading) {
         image.style.visibility = "visible";
     isLoaded[imageIndex] = true;
     var imageToPreload = getClosest(imageIndex);
+    console.log(isLoaded);
     if (imageToPreload)
-        preloadImages([images[imageToPreload]]);
+        preloadImage(imageToPreload);
 }
 
 function switchImage(delta) {
@@ -128,7 +137,8 @@ function switchImage(delta) {
     remove(document.querySelector("#image-large"));
     remove(document.querySelector("#loading"));
     var loading = getLoading();
-    document.querySelector("#holder").appendChild(loading);
+    if (imageLoaded[nextImage] === false)
+        document.querySelector("#holder").appendChild(loading);
     document.querySelector("#holder").appendChild(getImageWithSource(nextImage, loading));
 }
 
@@ -190,7 +200,7 @@ var keyHandler = function (event) {
 };
 
 var handler = function () {
-    preloadImages(previews);
+    preloadThumbnails(previews);
     var imagePreviews = document.querySelectorAll(".row > div > img.img-thumbnail");
     for (var i = 0; i < maxImages; i++)
         imagePreviews[i].setAttribute("src", previews[i + startIndex]);
