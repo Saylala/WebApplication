@@ -1,4 +1,5 @@
 var images;
+var isLoaded;
 var previews;
 var maxImages;
 var maximized = false;
@@ -13,6 +14,9 @@ function initGallery(model) {
     maxImages = model.MaxImages;
     images = model.Images;
     previews = model.ImagePreviews;
+    isLoaded = new Array(images.length);
+    for (var i = 0; i < images.length; i++)
+         isLoaded[i] = false;
 }
 
 function indexOf(arr, x) {
@@ -56,18 +60,18 @@ function getHolder(src) {
     div.innerHTML += leftArrow + rightArrow + closeX;
     var loading = getLoading();
     div.appendChild(loading);
-    div.appendChild(getImageWithSource(images[indexOf(previews, src)], loading));
+    div.appendChild(getImageWithSource(indexOf(previews, src), loading));
     return div;
 }
 
-function getImageWithSource(src, loading) {
+function getImageWithSource(srcIndex, loading) {
     var img = document.createElement("img");
     img.style.visibility = "hidden";
     img.onload = function() {
-        imageLoaded(img, loading);
+        imageLoaded(img, srcIndex, loading);
     }
     img.id = "image-large";
-    img.src = src;
+    img.src = images[srcIndex];
     return img;
 }
 
@@ -79,6 +83,7 @@ function getLoading() {
 
 function preloadImages(arrayOfImages) {
     for (var i = 0; i < arrayOfImages.length; i++) {
+        console.log(arrayOfImages[i]);
         new Image().src = arrayOfImages[i];
     }
 }
@@ -88,12 +93,31 @@ function remove(element) {
         element.parentNode.removeChild(element);
 }
 
-function imageLoaded(image, loading) {
+function getClosest(index) {
+    var delta = Math.pow(2, 53); // Max int
+    var closest = null;
+    for (var i = 0; i < images.length; i++) {
+        if (isLoaded[i] || i === index)
+            continue;
+        var newDelta = Math.abs(index - i);
+        if (newDelta > delta)
+            continue;
+        delta = newDelta;
+        closest = i;
+    }
+    return closest;
+}
+
+function imageLoaded(image, imageIndex, loading) {
     loading = loading || document.querySelector("#loading");
     remove(loading);
     image = image || document.querySelector("#image-large");
     if (image)
         image.style.visibility = "visible";
+    isLoaded[imageIndex] = true;
+    var imageToPreload = getClosest(imageIndex);
+    if (imageToPreload)
+        preloadImages([images[imageToPreload]]);
 }
 
 function switchImage(delta) {
@@ -105,7 +129,7 @@ function switchImage(delta) {
     remove(document.querySelector("#loading"));
     var loading = getLoading();
     document.querySelector("#holder").appendChild(loading);
-    document.querySelector("#holder").appendChild(getImageWithSource(images[nextImage], loading));
+    document.querySelector("#holder").appendChild(getImageWithSource(nextImage, loading));
 }
 
 function closeOverlay() {
