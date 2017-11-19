@@ -62,8 +62,7 @@ function getHolder(src) {
     div.innerHTML += leftArrow + rightArrow + closeX;
     var loading = getLoading();
     var index = indexOf(previews, src);
-    if (imageLoaded[index] === false)
-        div.appendChild(loading);
+    div.appendChild(loading);
     div.appendChild(getImageWithSource(index, loading));
     return div;
 }
@@ -159,8 +158,7 @@ function switchImage(delta) {
     remove(document.querySelector("#image-large"));
     remove(document.querySelector("#loading"));
     var loading = getLoading();
-    if (imageLoaded[nextImage] === false)
-        document.querySelector("#holder").appendChild(loading);
+    document.querySelector("#holder").appendChild(loading);
     document.querySelector("#holder").appendChild(getImageWithSource(nextImage, loading));
     setCookie(cookieName, nextImage);
 }
