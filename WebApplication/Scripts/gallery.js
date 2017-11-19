@@ -50,24 +50,24 @@ function getHelp() {
     return div;
 }
 
-function getHolder() {
+function getHolder(src) {
     var div = document.createElement("div");
     div.id = "holder";
     div.innerHTML += leftArrow + rightArrow + closeX;
-    div.appendChild(getLoading());
+    var loading = getLoading();
+    div.appendChild(loading);
+    div.appendChild(getImageWithSource(images[indexOf(previews, src)], loading));
     return div;
 }
 
-function getImageWithSource(src) {
+function getImageWithSource(src, loading) {
     var img = document.createElement("img");
-    // IE8 bullshit
-    img.onreadystatechange = function () {
-        if (!this.readyState || this.readyState === "loaded" || this.readyState === "complete")
-            imageLoaded();
+    img.style.visibility = "hidden";
+    img.onload = function() {
+        imageLoaded(img, loading);
     }
     img.id = "image-large";
     img.src = src;
-    img.cssText = "visibility: hidden;";
     return img;
 }
 
@@ -88,11 +88,12 @@ function remove(element) {
         element.parentNode.removeChild(element);
 }
 
-function imageLoaded() {
-    remove(document.querySelector("#loading"));
-    var image = document.querySelector("#image-large");
+function imageLoaded(image, loading) {
+    loading = loading || document.querySelector("#loading");
+    remove(loading);
+    image = image || document.querySelector("#image-large");
     if (image)
-        image.cssText = "visibility: visible;";
+        image.style.visibility = "visible";
 }
 
 function switchImage(delta) {
@@ -102,8 +103,9 @@ function switchImage(delta) {
         return;
     remove(document.querySelector("#image-large"));
     remove(document.querySelector("#loading"));
-    document.querySelector("#holder").appendChild(getImageWithSource(images[nextImage]));
-    document.querySelector("#holder").appendChild(getLoading());
+    var loading = getLoading();
+    document.querySelector("#holder").appendChild(loading);
+    document.querySelector("#holder").appendChild(getImageWithSource(images[nextImage], loading));
 }
 
 function closeOverlay() {
@@ -136,10 +138,7 @@ function bindEvents() {
             var target = event.target || event.srcElement;
             maximized = true;
             document.body.appendChild(getOverlay());
-            var holder = getHolder();
-            document.body.appendChild(holder);
-            holder.appendChild(getImageWithSource(images[indexOf(previews, target.src)]));
-
+            document.body.appendChild(getHolder(target.src));
             document.querySelector("#overlay").onclick = closeOverlay;
             document.querySelector("#close").onclick = closeOverlay;
             document.querySelector("#previous").onclick = function () {
