@@ -25,8 +25,16 @@ namespace WebApplication.Controllers
                 "/Images/4_thumbnail.jpg",
                 "/Images/5_thumbnail.jpg",
                 "/Images/6_thumbnail.jpg",
+            },
+            GalleryHelp = new []
+            {
+                "Click on preview to view full image.",
+                "Use left arrow to move to previous image.",
+                "Use right arrow to move to next image.",
+                "Use ESC button to exit gallery."
             }
         };
+
 
         public ActionResult Index()
         {

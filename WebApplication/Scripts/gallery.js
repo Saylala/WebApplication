@@ -1,7 +1,8 @@
-var images;
-var isLoaded;
-var previews;
 var maxImages;
+var images;
+var previews;
+var galleryHelp;
+var isLoaded;
 var maximized = false;
 var showingHelp = false;
 var startIndex = 0;
@@ -16,6 +17,7 @@ function initGallery(model) {
     maxImages = model.MaxImages;
     images = model.Images;
     previews = model.ImagePreviews;
+    galleryHelp = model.GalleryHelp;
     isLoaded = new Array(images.length);
     for (var i = 0; i < images.length; i++)
          isLoaded[i] = false;
@@ -35,6 +37,9 @@ function getOverlay() {
 }
 
 function getHelp() {
+    var helpBody = "";
+    for (var i = 0; i < galleryHelp.length; i++)
+        helpBody += "<li>" + galleryHelp[i] + "</li>";
     var modal =
         "<div id='gallery-help'>" +
         "<div class='modal-content modal-sm center-help'>" +
@@ -43,12 +48,7 @@ function getHelp() {
         "<h4 class='modal-title'>Gallery Controls:</h4>" +
         "</div>" +
         "<div class='modal-body'>" +
-        "<ul>" +
-        "<li>Click on preview to view full image.</li>" +
-        "<li>Use left arrow to move to previous image.</li>" +
-        "<li>Use right arrow to move to next image.</li>" +
-        "<li>Use ESC button to exit gallery.</li>" +
-        "</ul>" +
+        "<ul>" + helpBody + "</ul>" +
         "</div>" +
         "</div>" +
         "</div>";
@@ -131,27 +131,6 @@ function imageLoaded(image, imageIndex, loading) {
         preloadImage(imageToPreload);
 }
 
-function setCookie(name, value) {
-    document.cookie = name + "=" + value + "; path=/";
-}
-
-function getCookie(name) {
-    var extendedName = name + "=";
-    var parts = document.cookie.split(";");
-    for (var i = 0; i < parts.length; i++) {
-        var part = parts[i];
-        while (part.charAt(0) === " ")
-            part = part.substring(1, part.length);
-        if (part.indexOf(extendedName) === 0)
-            return part.substring(extendedName.length, part.length);
-    }
-    return null;
-}
-
-function deleteCookie(name) {
-    document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-}
-
 function switchImage(delta) {
     var imageLarge = document.querySelector("#image-large");
     var nextImage = indexOf(images, imageLarge.getAttribute("src")) + delta;
@@ -162,20 +141,23 @@ function switchImage(delta) {
     var loading = getLoading();
     document.querySelector("#holder").appendChild(loading);
     document.querySelector("#holder").appendChild(getImageWithSource(nextImage, loading));
-    setCookie(cookieName, nextImage);
+    setHash(nextImage);
 }
 
-function closeOverlay() {
+function closeOverlay(keepHash) {
     remove(document.querySelector("#overlay"));
     remove(document.querySelector("#holder"));
     maximized = false;
-    deleteCookie(cookieName);
+    if (keepHash !== true)
+        deleteHash();
 };
 
-function closeHelp() {
+function closeHelp(keepHash) {
     remove(document.querySelector("#overlay"));
     remove(document.querySelector("#holder"));
     showingHelp = false;
+    if (keepHash !== true)
+        deleteHash();
 }
 
 function showHelp() {
@@ -184,8 +166,10 @@ function showHelp() {
     document.body.appendChild(getOverlay());
     document.body.appendChild(getHelp());
     document.querySelector("#overlay").onclick = closeHelp;
+    document.querySelector("#gallery-help").onclick = closeHelp;
     document.querySelector("#close").onclick = closeHelp;
     showingHelp = true;
+    setHash("help");
 }
 
 function bindEvents() {
@@ -194,10 +178,12 @@ function bindEvents() {
         imagePreviews[i].onclick = function (event) {
             event = event || window.event;
             var target = event.target || event.srcElement;
-            maximized = true;
+            closeOverlay(true);
             document.body.appendChild(getOverlay());
             document.body.appendChild(getHolder(target.src));
-            setCookie(cookieName, indexOf(previews, target.src));
+            setHash(indexOf(previews, target.src));
+            maximized = true;
+
             document.querySelector("#overlay").onclick = closeOverlay;
             document.querySelector("#close").onclick = closeOverlay;
             document.querySelector("#previous").onclick = function () {
@@ -210,11 +196,45 @@ function bindEvents() {
     }
 }
 
-function loadImage(cookie) {
-    var selector = "img[src='" + previews[cookie] + "']";
+function loadImage(hash) {
+    var selector = "img[src='" + previews[hash.substring(1)] + "']";
     var thumbnail = document.querySelector(selector);
     thumbnail.click();
 }
+
+function setHash(value) {
+    document.location.hash = value;
+}
+
+function getHash() {
+    return document.location.hash;
+}
+
+function deleteHash() {
+    //Leaves # in URL
+    document.location.hash = "";
+}
+
+//function setCookie(name, value) {
+//    document.cookie = name + "=" + value + "; path=/";
+//}
+
+//function getCookie(name) {
+//    var extendedName = name + "=";
+//    var parts = document.cookie.split(";");
+//    for (var i = 0; i < parts.length; i++) {
+//        var part = parts[i];
+//        while (part.charAt(0) === " ")
+//            part = part.substring(1, part.length);
+//        if (part.indexOf(extendedName) === 0)
+//            return part.substring(extendedName.length, part.length);
+//    }
+//    return null;
+//}
+
+//function deleteCookie(name) {
+//    document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+//}
 
 var keyHandler = function (event) {
     if (event.keyCode === 112 && !maximized)
@@ -230,27 +250,38 @@ var keyHandler = function (event) {
         switchImage(delta);
 };
 
-var handler = function () {
+var loadHandler = function () {
     preloadThumbnails(previews);
     var imagePreviews = document.querySelectorAll(".row > div > img.img-thumbnail");
     for (var i = 0; i < maxImages; i++)
         imagePreviews[i].setAttribute("src", previews[i + startIndex]);
     bindEvents();
-    var cookie = getCookie(cookieName);
-    if (cookie)
-        loadImage(cookie);
+    historyHandler();
 };
+
+var historyHandler = function() {
+    var hash = getHash();
+    if (hash === "#help")
+        showHelp();
+    else if (hash)
+        loadImage(hash);
+    else {
+        closeOverlay(true);
+        closeHelp(true);
+    }
+}
 
 if (document.addEventListener) {
     // Mozilla, Opera and WebKit
-    document.addEventListener("DOMContentLoaded", handler);
-    document.addEventListener("keydown", keyHandler); 
+    document.addEventListener("DOMContentLoaded", loadHandler);
+    document.addEventListener("keydown", keyHandler);
+    window.addEventListener("popstate", historyHandler);
 }
 else if (document.attachEvent) {
     // If Internet Explorer, the event model is used
     document.attachEvent("onreadystatechange", function () {
         if (document.readyState === "complete") {
-            handler();
+            loadHandler();
         }
     });
     document.attachEvent("onkeydown", keyHandler);
