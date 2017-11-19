@@ -36,7 +36,8 @@ function getOverlay() {
 
 function getHelp() {
     var modal =
-        "<div id='gallery-help' class='modal-content'>" +
+        "<div id='gallery-help'>" +
+        "<div class='modal-content modal-sm center-help'>" +
         "<div class='modal-header'>" +
         "<div id='close' class='gallery-button close-button fa fa-times'></div>" +
         "<h4 class='modal-title'>Gallery Controls:</h4>" +
@@ -48,6 +49,7 @@ function getHelp() {
         "<li>Use right arrow to move to next image.</li>" +
         "<li>Use ESC button to exit gallery.</li>" +
         "</ul>" +
+        "</div>" +
         "</div>" +
         "</div>";
     var div = document.createElement("div");
