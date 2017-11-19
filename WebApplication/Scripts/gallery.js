@@ -124,7 +124,6 @@ function imageLoaded(image, imageIndex, loading) {
         image.style.visibility = "visible";
     isLoaded[imageIndex] = true;
     var imageToPreload = getClosest(imageIndex);
-    console.log(isLoaded);
     if (imageToPreload)
         preloadImage(imageToPreload);
 }
