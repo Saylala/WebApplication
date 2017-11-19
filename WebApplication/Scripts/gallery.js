@@ -10,6 +10,8 @@ var leftArrow = "<div id='previous' class='gallery-button previous-button fa fa-
 var rightArrow = "<div id='next' class='gallery-button next-button fa fa-chevron-right'></div>";
 var closeX = "<div id='close' class='gallery-button close-button fa fa-times'></div>";
 
+var cookieName = "CurrentImageIndex";
+
 function initGallery(model) {
     maxImages = model.MaxImages;
     images = model.Images;
@@ -128,6 +130,27 @@ function imageLoaded(image, imageIndex, loading) {
         preloadImage(imageToPreload);
 }
 
+function setCookie(name, value) {
+    document.cookie = name + "=" + value + "; path=/";
+}
+
+function getCookie(name) {
+    var extendedName = name + "=";
+    var parts = document.cookie.split(";");
+    for (var i = 0; i < parts.length; i++) {
+        var part = parts[i];
+        while (part.charAt(0) === " ")
+            part = part.substring(1, part.length);
+        if (part.indexOf(extendedName) === 0)
+            return part.substring(extendedName.length, part.length);
+    }
+    return null;
+}
+
+function deleteCookie(name) {
+    document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+}
+
 function switchImage(delta) {
     var imageLarge = document.querySelector("#image-large");
     var nextImage = indexOf(images, imageLarge.getAttribute("src")) + delta;
@@ -139,12 +162,14 @@ function switchImage(delta) {
     if (imageLoaded[nextImage] === false)
         document.querySelector("#holder").appendChild(loading);
     document.querySelector("#holder").appendChild(getImageWithSource(nextImage, loading));
+    setCookie(cookieName, nextImage);
 }
 
 function closeOverlay() {
     remove(document.querySelector("#overlay"));
     remove(document.querySelector("#holder"));
     maximized = false;
+    deleteCookie(cookieName);
 };
 
 function closeHelp() {
@@ -172,6 +197,7 @@ function bindEvents() {
             maximized = true;
             document.body.appendChild(getOverlay());
             document.body.appendChild(getHolder(target.src));
+            setCookie(cookieName, indexOf(previews, target.src));
             document.querySelector("#overlay").onclick = closeOverlay;
             document.querySelector("#close").onclick = closeOverlay;
             document.querySelector("#previous").onclick = function () {
@@ -182,6 +208,12 @@ function bindEvents() {
             };
         };
     }
+}
+
+function loadImage(cookie) {
+    var selector = "img[src='" + previews[cookie] + "']";
+    var thumbnail = document.querySelector(selector);
+    thumbnail.click();
 }
 
 var keyHandler = function (event) {
@@ -204,6 +236,9 @@ var handler = function () {
     for (var i = 0; i < maxImages; i++)
         imagePreviews[i].setAttribute("src", previews[i + startIndex]);
     bindEvents();
+    var cookie = getCookie(cookieName);
+    if (cookie)
+        loadImage(cookie);
 };
 
 if (document.addEventListener) {
