@@ -188,17 +188,13 @@ function changeToggleButton() {
         return;
     var active = "fa-star-o";
     var disabled = "fa-star";
-    var newClasses = Array(button.classList.length);
-    for (var i = 0; i < button.classList.length; i++) {
-        if (button.classList[i] === active || button.classList[i] === disabled)
-            newClasses[i] = button.classList[i] === active ? disabled : active;
-        else
-            newClasses[i] = button.classList[i];
-    }
-    button.classList = newClasses.join(" ");
+    var changeTo = button.className.indexOf(active) !== -1 ? disabled : active;
+    var newClasses = "gallery-button toggle-button fa " + changeTo;
+    button.className = newClasses;
 }
 
-function toggleBackground(index) {
+function toggleBackground() {
+    var index = indexOf(images, document.querySelector("#image-large").src);
     var cookie = getCookie("background");
     if (cookie && Number(cookie) === index) {
         removeBackground();
@@ -240,9 +236,7 @@ function bindEvents() {
             document.querySelector("#next").onclick = function () {
                 switchImage(1);
             };
-            document.querySelector("#toggle").onclick = function () {
-                toggleBackground(index);
-            };
+            document.querySelector("#toggle").onclick = toggleBackground;
         };
     }
 }
