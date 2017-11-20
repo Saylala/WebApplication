@@ -5,7 +5,6 @@ var galleryHelp;
 var isLoaded;
 var maximized = false;
 var showingHelp = false;
-var startIndex = 0;
 
 var leftArrow = "<div id='previous' class='gallery-button previous-button fa fa-chevron-left'></div>";
 var rightArrow = "<div id='next' class='gallery-button next-button fa fa-chevron-right'></div>";
@@ -28,6 +27,11 @@ function indexOf(arr, x) {
         if (x.indexOf(arr[i]) !== -1)
             return i;
     return -1;
+}
+
+function remove(element) {
+    if (element && element.parentNode)
+        element.parentNode.removeChild(element);
 }
 
 function getOverlay() {
@@ -58,12 +62,23 @@ function getHelp() {
     return div;
 }
 
+function getToggleBackground(index) {
+    var current = getCookie("background");
+    var active = current && Number(current) === index;
+    var icon = "fa-star-o";
+    if (active) {
+        icon = "fa-star";
+    }
+    var toggleBackground = "<div id='toggle' class='gallery-button toggle-button fa " + icon + "'></div>";
+    return toggleBackground;
+}
+
 function getHolder(src) {
     var div = document.createElement("div");
-    div.id = "holder";
-    div.innerHTML += leftArrow + rightArrow + closeX;
-    var loading = getLoading();
     var index = indexOf(previews, src);
+    div.id = "holder";
+    div.innerHTML += leftArrow + rightArrow + closeX + getToggleBackground(index);
+    var loading = getLoading();
     div.appendChild(loading);
     div.appendChild(getImageWithSource(index, loading));
     return div;
@@ -97,11 +112,6 @@ function preloadImage(imageIndex) {
         imageLoaded(null, imageIndex, null);
     }
     image.src = images[imageIndex];
-}
-
-function remove(element) {
-    if (element && element.parentNode)
-        element.parentNode.removeChild(element);
 }
 
 function getClosest(index) {
@@ -172,16 +182,54 @@ function showHelp() {
     setHash("help");
 }
 
+function changeToggleButton() {
+    var button = document.querySelector("#toggle");
+    if (!button)
+        return;
+    var active = "fa-star-o";
+    var disabled = "fa-star";
+    var newClasses = Array(button.classList.length);
+    for (var i = 0; i < button.classList.length; i++) {
+        if (button.classList[i] === active || button.classList[i] === disabled)
+            newClasses[i] = button.classList[i] === active ? disabled : active;
+        else
+            newClasses[i] = button.classList[i];
+    }
+    button.classList = newClasses.join(" ");
+}
+
+function toggleBackground(index) {
+    var cookie = getCookie("background");
+    if (cookie && Number(cookie) === index) {
+        removeBackground();
+        deleteCookie("background");
+    } else {
+        setBackground(index);
+        setCookie("background", index);
+    }
+    changeToggleButton();
+}
+
+function setBackground(index) {
+    var image = images[index];
+    document.querySelector("#background").style.backgroundImage = "url(" + image + ")";
+}
+
+function removeBackground() {
+    document.querySelector("#background").style.backgroundImage = "none";
+}
+
 function bindEvents() {
     var imagePreviews = document.querySelectorAll(".row > div > img.img-thumbnail");
     for (var i = 0; i < imagePreviews.length; i++) {
         imagePreviews[i].onclick = function (event) {
             event = event || window.event;
             var target = event.target || event.srcElement;
+            var index = indexOf(previews, target.src);
             closeOverlay(true);
             document.body.appendChild(getOverlay());
             document.body.appendChild(getHolder(target.src));
-            setHash(indexOf(previews, target.src));
+            setHash(index);
             maximized = true;
 
             document.querySelector("#overlay").onclick = closeOverlay;
@@ -192,6 +240,9 @@ function bindEvents() {
             document.querySelector("#next").onclick = function () {
                 switchImage(1);
             };
+            document.querySelector("#toggle").onclick = function () {
+                toggleBackground(index);
+            };
         };
     }
 }
@@ -201,40 +252,6 @@ function loadImage(hash) {
     var thumbnail = document.querySelector(selector);
     thumbnail.click();
 }
-
-function setHash(value) {
-    document.location.hash = value;
-}
-
-function getHash() {
-    return document.location.hash;
-}
-
-function deleteHash() {
-    //Leaves # in URL
-    document.location.hash = "";
-}
-
-//function setCookie(name, value) {
-//    document.cookie = name + "=" + value + "; path=/";
-//}
-
-//function getCookie(name) {
-//    var extendedName = name + "=";
-//    var parts = document.cookie.split(";");
-//    for (var i = 0; i < parts.length; i++) {
-//        var part = parts[i];
-//        while (part.charAt(0) === " ")
-//            part = part.substring(1, part.length);
-//        if (part.indexOf(extendedName) === 0)
-//            return part.substring(extendedName.length, part.length);
-//    }
-//    return null;
-//}
-
-//function deleteCookie(name) {
-//    document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
-//}
 
 var keyHandler = function (event) {
     if (event.keyCode === 112 && !maximized)
@@ -250,26 +267,67 @@ var keyHandler = function (event) {
         switchImage(delta);
 };
 
-var loadHandler = function () {
-    preloadThumbnails(previews);
-    var imagePreviews = document.querySelectorAll(".row > div > img.img-thumbnail");
-    for (var i = 0; i < maxImages; i++)
-        imagePreviews[i].setAttribute("src", previews[i + startIndex]);
-    bindEvents();
-    historyHandler();
-};
+function setHash(value) {
+    document.location.hash = value;
+}
+
+function getHash() {
+    return document.location.hash;
+}
+
+function deleteHash() {
+    //Leaves # in URL
+    document.location.hash = "";
+}
 
 var historyHandler = function() {
     var hash = getHash();
     if (hash === "#help")
         showHelp();
-    else if (hash)
+    else if (hash !== "" && !isNaN(hash.substring(1)))
         loadImage(hash);
-    else {
+    else if (hash === "") {
         closeOverlay(true);
         closeHelp(true);
     }
 }
+
+function setCookie(name, value) {
+    document.cookie = name + "=" + value + "; path=/";
+}
+
+function getCookie(name) {
+    var extendedName = name + "=";
+    var parts = document.cookie.split(";");
+    for (var i = 0; i < parts.length; i++) {
+        var part = parts[i];
+        while (part.charAt(0) === " ")
+            part = part.substring(1, part.length);
+        if (part.indexOf(extendedName) === 0)
+            return part.substring(extendedName.length, part.length);
+    }
+    return null;
+}
+
+function deleteCookie(name) {
+    document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+}
+
+var cookieHandler = function() {
+    var cookie = getCookie("background");
+    if (cookie && !isNaN(cookie))
+        setBackground(cookie);
+}
+
+var loadHandler = function () {
+    preloadThumbnails(previews);
+    var imagePreviews = document.querySelectorAll(".row > div > img.img-thumbnail");
+    for (var i = 0; i < maxImages; i++)
+        imagePreviews[i].setAttribute("src", previews[i]);
+    bindEvents();
+    historyHandler();
+    cookieHandler();
+};
 
 if (document.addEventListener) {
     // Mozilla, Opera and WebKit

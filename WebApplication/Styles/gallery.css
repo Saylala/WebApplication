@@ -22,7 +22,6 @@
     top: 0;
     bottom: 0;
     margin: auto;
-
 }
 
 .center-help {
@@ -54,9 +53,8 @@
 }
 
 .gallery-item:hover {
-    opacity: 0.7;
-    /*IE8*/
-    filter: alpha(opacity=70);
+    background-color: #15a589;
+    border-color: #15a589;
     cursor: pointer;
 }
 
@@ -83,6 +81,11 @@
 .close-button {
     top: 10px;
     right: 2%;
+}
+
+.toggle-button {
+    top: 10px;
+    left: 2%;
 }
 
 .next-button {
