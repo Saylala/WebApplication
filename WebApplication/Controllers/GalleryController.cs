@@ -31,10 +31,10 @@ namespace WebApplication.Controllers
                 "Click on preview to view full image.",
                 "Use left arrow to move to previous image.",
                 "Use right arrow to move to next image.",
-                "Use ESC button to exit gallery."
+                "Use ESC button to exit gallery.",
+                "Use Star button to set image as background."
             }
         };
-
 
         public ActionResult Index()
         {

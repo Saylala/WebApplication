@@ -1,0 +1,41 @@
+﻿@using Microsoft.AspNet.Identity
+@model WebApplication.Models.ThreadModel
+
+@{
+    var firstMessage = Model.Posts.First();
+    ViewBag.Title = @Model.BoardName + " - " +  firstMessage.Topic;
+}
+
+<a href="@Url.Action("Board", new {boardId = Model.BoardId})">Back</a>
+
+@foreach (var p in Model.Posts.Select((e, i) => new {Index = i, Post = e}))
+{
+    @Html.Raw(p.Index == 0 ? "<div class='post list-group-item list-group-item-head clickable' data-link='#'>" : "<div class='post list-group-item clickable' data-link='#'>")
+    <div class="head-container">
+        <h2 class="left-side">@p.Post.Topic</h2>
+        <div class="right-side">
+            <p>@(p.Post.Username ?? "DELETED")</p>
+            <p>@p.Post.Timestamp</p>
+        </div>
+    </div>
+    <hr/>
+    <p>@p.Post.Text</p>
+    <hr />
+    @Html.Raw("</div>")
+}
+
+<div id="refresh" data-url="@Url.Action("GetNewPosts")" data-thread-id="@Model.Id"></div>
+
+
+@using (Html.BeginForm("AddPost", "Forum", FormMethod.Post))
+{
+    <h2>Add post:</h2>
+    <input type="hidden" name="threadId" value="@Model.Id"/>
+    <p>Message:</p>
+    <input class="form-control" type="text" name="text"/>
+    <br/>
+    <input class="btn btn-success" type="submit" value="Add"/>
+}
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/Scripts/forum")

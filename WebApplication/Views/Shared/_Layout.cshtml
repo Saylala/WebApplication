@@ -16,6 +16,7 @@
             <ul class="nav navbar-nav">
                 <li>@Html.ActionLink("Home", "Index", "Home")</li>
                 <li>@Html.ActionLink("Gallery", "Index", "Gallery")</li>
+                <li>@Html.ActionLink("Forum", "Index", "Forum")</li>
             </ul>
             @*@Html.Partial("_LoginPartial")*@
         </div>
@@ -29,7 +30,7 @@
         </div>
     </footer>
 
-    @*@Scripts.Render("~/bundles/bootstrap")*@
-    @*@RenderSection("scripts", required: false)*@
+    @*@Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)*@
 </body>
 </html>

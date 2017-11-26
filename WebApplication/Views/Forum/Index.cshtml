@@ -1,0 +1,22 @@
+﻿@using Microsoft.AspNet.Identity
+@model IEnumerable<WebApplication.Models.BoardModel>
+
+@{
+    ViewBag.Title = "Forum";
+}
+
+@foreach (var b in Model)
+{
+    <a href="@Url.Action("Board", "Forum", new {boardId = b.ShortName})">@($"/{b.ShortName}/ - {b.Name}")</a>
+    <br/>
+}
+
+@using (Html.BeginForm("AddBoard", "Forum", FormMethod.Post))
+{
+    <h2>Add board:</h2>
+    <p>Short name</p>
+    <input class="form-control" type="text" name="shortName" /><br />
+    <p>Name</p>
+    <input class="form-control" type="text" name="name" /><br />
+    <input class="btn btn-success" type="submit" value="Add"/>
+}

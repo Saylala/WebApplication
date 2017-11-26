@@ -1,0 +1,47 @@
+﻿@model WebApplication.Models.BoardModel
+
+@{
+    ViewBag.Title = Model.Name;
+}
+
+<a href="@Url.Action("Index")">Back</a>
+
+@foreach (var t in Model.Threads)
+{
+    if (!t.Posts.Any())
+    {
+        continue;
+    }
+    var threadStart = t.Posts.First();
+    var messagesCount = t.Posts.Count();
+    <div class="list-group-item clickable" data-link="@Url.Action("Thread", "Forum", new {threadId = t.Id})">
+        <div class="head-container">
+            <h2 class="left-side">@threadStart.Topic</h2>
+            <div class="right-side">
+                <p>Anonymous</p>
+                <p>@threadStart.Timestamp</p>
+            </div>
+        </div>
+        <hr />
+        <p>@threadStart.Text</p>
+        <em>(@messagesCount @(messagesCount == 1 ? "message" : "messages"))</em>
+        <hr/>
+    </div>
+}
+
+<hr/>
+@using (Html.BeginForm("AddThread", "Forum", FormMethod.Post))
+{
+    <h2>Add thread:</h2>
+    <input type="hidden" name="boardId" value="@Model.ShortName"/>
+    <p>Title:</p>
+    <input class="form-control" type="text" name="name"/>
+    <br/>
+    <p>Message:</p>
+    <input class="form-control" type="text" name="text"/>
+    <br/>
+    <input class="btn btn-success" type="submit" value="Add"/>
+}
+
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/Scripts/forum")

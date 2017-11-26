@@ -3,12 +3,18 @@
     min-height: 100%;
 }
 
-body {
-    margin-bottom: 50px;
-}
-
 #background {
     background-size: cover;
+}
+
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+body {
+    margin-bottom: 50px;
 }
 
 .footer {

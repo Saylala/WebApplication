@@ -89,7 +89,7 @@ function getImageWithSource(srcIndex, loading) {
     img.style.visibility = "hidden";
     img.onload = function() {
         imageLoaded(img, srcIndex, loading);
-    }
+    };
     img.id = "image-large";
     img.src = images[srcIndex];
     return img;
@@ -108,9 +108,9 @@ function preloadThumbnails(arrayOfImages) {
 
 function preloadImage(imageIndex) {
     var image = new Image();
-    image.onload = function () {
+    image.onload = function() {
         imageLoaded(null, imageIndex, null);
-    }
+    };
     image.src = images[imageIndex];
 }
 
@@ -160,7 +160,7 @@ function closeOverlay(keepHash) {
     maximized = false;
     if (keepHash !== true)
         deleteHash();
-};
+}
 
 function closeHelp(keepHash) {
     remove(document.querySelector("#overlay"));
@@ -248,8 +248,10 @@ function loadImage(hash) {
 }
 
 var keyHandler = function (event) {
-    if (event.keyCode === 112 && !maximized)
+    if (event.keyCode === 112 && !maximized) {
         showHelp();
+        event.preventDefault();
+    }
     if (event.keyCode === 27 && maximized)
         closeOverlay();
     if (event.keyCode === 27 && showingHelp)
@@ -284,7 +286,7 @@ var historyHandler = function() {
         closeOverlay(true);
         closeHelp(true);
     }
-}
+};
 
 function setCookie(name, value) {
     document.cookie = name + "=" + value + "; path=/";
@@ -311,7 +313,7 @@ var cookieHandler = function() {
     var cookie = getCookie("background");
     if (cookie && !isNaN(cookie))
         setBackground(cookie);
-}
+};
 
 var loadHandler = function () {
     preloadThumbnails(previews);

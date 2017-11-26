@@ -1,5 +1,4 @@
-﻿using System.Web;
-using System.Web.Optimization;
+﻿using System.Web.Optimization;
 
 namespace WebApplication
 {
@@ -19,6 +18,7 @@ namespace WebApplication
             //bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include("~/Scripts/bootstrap.js", "~/Scripts/respond.js"));
 
             bundles.Add(new ScriptBundle("~/Scripts/gallery").Include("~/Scripts/gallery.js"));
+            bundles.Add(new ScriptBundle("~/Scripts/forum").Include("~/Scripts/forum.js"));
 
             bundles.Add(new StyleBundle("~/Styles/bootstrap").Include("~/Styles/bootstrap.css"));
             bundles.Add(new StyleBundle("~/Styles/font-awesome").Include("~/Styles/font-awesome.css"));
