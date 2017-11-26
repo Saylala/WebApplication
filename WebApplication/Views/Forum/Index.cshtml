@@ -1,15 +1,14 @@
-﻿@using Microsoft.AspNet.Identity
-@model IEnumerable<WebApplication.Models.BoardModel>
+﻿@*@model IEnumerable<WebApplication.Models.BoardModel>*@
 
 @{
     ViewBag.Title = "Forum";
 }
 
-@foreach (var b in Model)
+@*@foreach (var b in Model)
 {
     <a href="@Url.Action("Board", "Forum", new {boardId = b.ShortName})">@($"/{b.ShortName}/ - {b.Name}")</a>
     <br/>
-}
+}*@
 
 @using (Html.BeginForm("AddBoard", "Forum", FormMethod.Post))
 {

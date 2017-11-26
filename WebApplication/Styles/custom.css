@@ -32,6 +32,12 @@ body {
     font-size: 20px;
 }
 
+.error-template {
+    padding: 40px 15px;
+    text-align: center;
+}
+
+
 @media (min-width: 2560px) {
     body {
         margin-bottom: 70px;

@@ -1,4 +1,4 @@
-﻿@model WebApplication.Models.BoardModel
+﻿@*@model WebApplication.Models.BoardModel*@
 
 @{
     ViewBag.Title = Model.Name;
@@ -6,7 +6,7 @@
 
 <a href="@Url.Action("Index")">Back</a>
 
-@foreach (var t in Model.Threads)
+@*@foreach (var t in Model.Threads)
 {
     if (!t.Posts.Any())
     {
@@ -27,7 +27,7 @@
         <em>(@messagesCount @(messagesCount == 1 ? "message" : "messages"))</em>
         <hr/>
     </div>
-}
+}*@
 
 <hr/>
 @using (Html.BeginForm("AddThread", "Forum", FormMethod.Post))

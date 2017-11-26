@@ -7,7 +7,6 @@
     @Styles.Render("~/Styles/bootstrap")
     @Styles.Render("~/Styles/font-awesome")
     @Styles.Render("~/Styles/custom")
-    @*@Scripts.Render("~/bundles/modernizr")*@
 </head>
 <body id="background">
     @*@Html.Partial("_MetricsPartial")*@
@@ -18,7 +17,6 @@
                 <li>@Html.ActionLink("Gallery", "Index", "Gallery")</li>
                 <li>@Html.ActionLink("Forum", "Index", "Forum")</li>
             </ul>
-            @*@Html.Partial("_LoginPartial")*@
         </div>
     </div>
     <div class="container">
@@ -29,8 +27,5 @@
             <p>&copy; @DateTime.Now.Year - Some useless footer.</p>
         </div>
     </footer>
-
-    @*@Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)*@
 </body>
 </html>

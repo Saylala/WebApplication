@@ -12,7 +12,6 @@ namespace WebApplication.Controllers
 {
     public class ForumController : Controller
     {
-        private ApplicationUserManager UserManager => Request.GetOwinContext().GetUserManager<ApplicationUserManager>();
         private readonly BoardsRepo boards = new BoardsRepo();
         private readonly ThreadsRepo threads = new ThreadsRepo();
         private readonly PostsRepo posts = new PostsRepo();
@@ -74,10 +73,6 @@ namespace WebApplication.Controllers
                 Posts = posts.Skip(currentCount).Select(p => new
                 {
                     UserId = p.UserId,
-                    Username = UserManager.Users
-                        .ToList()
-                        .FirstOrDefault(u => u.Id == p.UserId)
-                        ?.UserName,
                     Id = p.Id,
                     Timestamp = p.Timestamp.ToString(),
                     Topic = p.Topic,
@@ -95,11 +90,6 @@ namespace WebApplication.Controllers
             foreach (var thread in threads)
             {
                 var posts = this.posts.GetPosts(thread.Id).ToList();
-                foreach (var post in posts.Take(1))
-                    post.Username = UserManager.Users
-                        .ToList()
-                        .FirstOrDefault(x => x.Id == post.UserId)
-                        ?.UserName;
                 thread.Posts = posts;
             }
             board.Threads = threads;
@@ -110,11 +100,6 @@ namespace WebApplication.Controllers
         {
             var thread = threads.GetThread(threadId);
             var posts = this.posts.GetPosts(thread.Id).ToList();
-            foreach (var post in posts)
-                post.Username = UserManager.Users
-                    .ToList()
-                    .FirstOrDefault(x => x.Id == post.UserId)
-                    ?.UserName;
             thread.Posts = posts;
             thread.BoardName = (await boards.GetBoard(thread.BoardId)).Name;
             return View(thread);

@@ -1,12 +1,11 @@
-﻿@using Microsoft.AspNet.Identity
-@model WebApplication.Models.ThreadModel
+﻿@*@model WebApplication.Models.ThreadModel*@
 
 @{
     var firstMessage = Model.Posts.First();
     ViewBag.Title = @Model.BoardName + " - " +  firstMessage.Topic;
 }
 
-<a href="@Url.Action("Board", new {boardId = Model.BoardId})">Back</a>
+@*<a href="@Url.Action("Board", new {boardId = Model.BoardId})">Back</a>
 
 @foreach (var p in Model.Posts.Select((e, i) => new {Index = i, Post = e}))
 {
@@ -24,7 +23,7 @@
     @Html.Raw("</div>")
 }
 
-<div id="refresh" data-url="@Url.Action("GetNewPosts")" data-thread-id="@Model.Id"></div>
+<div id="refresh" data-url="@Url.Action("GetNewPosts")" data-thread-id="@Model.Id"></div>*@
 
 
 @using (Html.BeginForm("AddPost", "Forum", FormMethod.Post))
