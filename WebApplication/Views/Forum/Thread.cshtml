@@ -1,40 +1,68 @@
-﻿@*@model WebApplication.Models.ThreadModel*@
+﻿@model WebApplication.Models.ThreadModel
 
 @{
-    var firstMessage = Model.Posts.First();
-    ViewBag.Title = @Model.BoardName + " - " +  firstMessage.Topic;
+    ViewBag.Title = Model.BoardName + " - " + Model.Posts.First().Topic;
 }
+@Styles.Render("~/Styles/forum")
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
-@*<a href="@Url.Action("Board", new {boardId = Model.BoardId})">Back</a>
-
-@foreach (var p in Model.Posts.Select((e, i) => new {Index = i, Post = e}))
-{
-    @Html.Raw(p.Index == 0 ? "<div class='post list-group-item list-group-item-head clickable' data-link='#'>" : "<div class='post list-group-item clickable' data-link='#'>")
-    <div class="head-container">
-        <h2 class="left-side">@p.Post.Topic</h2>
-        <div class="right-side">
-            <p>@(p.Post.Username ?? "DELETED")</p>
-            <p>@p.Post.Timestamp</p>
+<a href="@Url.Action("Board", new {boardId = Model.BoardId})">[Back]</a>
+<hr />
+@{
+    var firstPost = Model.Posts.First();
+    <div class="post-container clickable" data-link="#">
+        <div class='post first-post' data-link='#'>
+            <div class="post-header"><b>@firstPost.Topic</b> @firstPost.Username @firstPost.Timestamp No.@firstPost.Id</div>
+            <div class="post-message">@firstPost.Text</div>
         </div>
     </div>
-    <hr/>
-    <p>@p.Post.Text</p>
-    <hr />
-    @Html.Raw("</div>")
+    foreach (var data in Model.Posts.Select((e, i) => new {Index = i, Post = e}).Skip(1))
+    {
+        <div class="post-container">
+            <div class='post' data-link='#'>
+                <div class="post-header">@data.Post.Username @data.Post.Timestamp #@(data.Index+1) No.@data.Post.Id</div>
+                <div class="post-message">@data.Post.Text</div>
+            </div>
+        </div>
+    }
 }
+<hr />
 
-<div id="refresh" data-url="@Url.Action("GetNewPosts")" data-thread-id="@Model.Id"></div>*@
+<div id="refresh" data-url="@Url.Action("GetNewPosts")" data-thread-id="@Model.Id"></div>
 
 
-@using (Html.BeginForm("AddPost", "Forum", FormMethod.Post))
-{
-    <h2>Add post:</h2>
-    <input type="hidden" name="threadId" value="@Model.Id"/>
-    <p>Message:</p>
-    <input class="form-control" type="text" name="text"/>
-    <br/>
-    <input class="btn btn-success" type="submit" value="Add"/>
-}
+<div class="well col-md-6 col-md-offset-3">
+    @using (Html.BeginForm("AddPost", "Forum", FormMethod.Post, new { @class = "form-horizontal" }))
+    {
+        <fieldset>
+            <legend>Reply to thread No.@Model.Posts.First().Id</legend>
+            <input type="hidden" name="threadId" value="@Model.Id" />
+            <div class="form-group">
+                <label for="name" class="col-lg-2 control-label">Name</label>
+                <div class="col-lg-10">
+                    <input class="form-control" id="name" type="text" name="name" placeholder="Anonymous">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="textArea" class="col-lg-2 control-label">Message</label>
+                <div class="col-lg-10">
+                    <textarea class="form-control" name="text" rows="3" id="textArea"></textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-10 col-lg-offset-2">
+                    <div class="g-recaptcha" data-sitekey="6LecXTsUAAAAAAc_NMKRbAQtKPWtpopuy_F4SCL0"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-10 col-lg-offset-2">
+                    <button type="submit" class="btn btn-primary">Post</button>
+                </div>
+            </div>
+        </fieldset>
+    }
+</div>
 
-@Scripts.Render("~/bundles/jquery")
-@Scripts.Render("~/Scripts/forum")
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/Scripts/forum")

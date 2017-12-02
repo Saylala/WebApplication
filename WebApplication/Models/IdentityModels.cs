@@ -24,8 +24,7 @@ namespace WebApplication.Models
         public DbSet<ThreadModel> Threads { get; set; }
         public DbSet<PostModel> Posts { get; set; }
 
-        public ApplicationDbContext()
-            : base("DefaultConnection", throwIfV1Schema: false)
+        public ApplicationDbContext() : base("DefaultConnection", throwIfV1Schema: false)
         {
         }
 

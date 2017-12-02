@@ -38,7 +38,9 @@ namespace WebApplication.DataContexts
         public async Task DeleteThread(int threadId)
         {
             db.Posts.RemoveRange(db.Posts.Where(p => p.ThreadId == threadId));
-            db.Threads.Remove(db.Threads.Find(threadId));
+            var thread = db.Threads.Find(threadId);
+            if (thread != null)
+                db.Threads.Remove(thread);
             await db.SaveChangesAsync();
         }
     }

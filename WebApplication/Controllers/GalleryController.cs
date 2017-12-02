@@ -32,7 +32,7 @@ namespace WebApplication.Controllers
                 "Use left arrow to move to previous image.",
                 "Use right arrow to move to next image.",
                 "Use ESC button to exit gallery.",
-                "Use Star button to set image as background."
+                "Use Star button while in maximized mode to set image as background."
             }
         };
 

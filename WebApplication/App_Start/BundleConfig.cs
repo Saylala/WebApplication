@@ -15,6 +15,7 @@ namespace WebApplication
             bundles.Add(new StyleBundle("~/Styles/font-awesome").Include("~/Styles/font-awesome.css"));
             bundles.Add(new StyleBundle("~/Styles/custom").Include("~/Styles/custom.css"));
             bundles.Add(new StyleBundle("~/Styles/gallery").Include("~/Styles/gallery.css"));
+            bundles.Add(new StyleBundle("~/Styles/forum").Include("~/Styles/forum.css"));
         }
     }
 }

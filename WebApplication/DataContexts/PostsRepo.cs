@@ -43,7 +43,9 @@ namespace WebApplication.DataContexts
 
         public async Task DeletePost(int postId)
         {
-            db.Posts.Remove(db.Posts.Find(postId));
+            var post = db.Posts.Find(postId);
+            if (post != null)
+                db.Posts.Remove(post);
             await db.SaveChangesAsync();
         }
     }

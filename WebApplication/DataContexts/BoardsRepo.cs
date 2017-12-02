@@ -52,7 +52,9 @@ namespace WebApplication.DataContexts
             var posts = db.Posts.Where(p => threads.Any(t => t.Id == p.ThreadId));
             db.Posts.RemoveRange(posts);
             db.Threads.RemoveRange(threads);
-            db.Boards.Remove(db.Boards.Find(boardId));
+            var board = db.Boards.Find(boardId);
+            if (board != null)
+                db.Boards.Remove(board);
             await db.SaveChangesAsync();
         }
     }

@@ -1,0 +1,39 @@
+﻿.clickable {
+    cursor: pointer;
+}
+
+.list-group-item-head {
+    background-color: #f8f8f8;
+}
+
+.right-side {
+    float: right;
+    width: 30%;
+    text-align: right;
+}
+
+.post-container {
+    margin: 4px 0 4px 0;
+}
+
+.post {
+    display: inline-block;
+    background: #DDDDDD;
+    border: solid 1px #CCCCCC;
+    border-radius: 4px;
+}
+
+.first-post {
+    background: #FFFFFF;
+    border: none;
+}
+
+.post-message {
+    overflow: auto;
+    max-height: 600px;
+    margin: 1em 35px;
+}
+
+.post-header {
+    margin: 4px;
+}

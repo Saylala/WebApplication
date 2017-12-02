@@ -181,6 +181,7 @@
     </Compile>
     <Compile Include="Models\BoardModel.cs" />
     <Compile Include="Models\CaptchaResponse.cs" />
+    <Compile Include="Models\ErrorModel.cs" />
     <Compile Include="Models\GalleryModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\PostModel.cs" />
@@ -218,6 +219,7 @@
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <Content Include="Styles\custom.css" />
     <Content Include="Styles\font-awesome.css" />
+    <Content Include="Styles\forum.css" />
     <Content Include="Styles\gallery.css" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
