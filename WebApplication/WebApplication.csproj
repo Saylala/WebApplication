@@ -239,7 +239,6 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Gallery\Index.cshtml" />
-    <Content Include="Views\Shared\_MetricsPartial.cshtml" />
     <Content Include="Views\Forum\Board.cshtml" />
     <Content Include="Views\Forum\Index.cshtml" />
     <Content Include="Views\Forum\Thread.cshtml" />
