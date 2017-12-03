@@ -20,7 +20,7 @@
     <div class="post-container clickable" data-link="@Url.Action("Thread", "Forum", new {threadId = thread.Id})">
         <div class='post first-post' data-link='#'>
             <div class="post-header"><b>@firstPost.Topic</b> @firstPost.Username @firstPost.Timestamp No.@firstPost.Id</div>
-            <div class="post-message">@firstPost.Text</div>
+            <div class="post-message">@Html.Raw(firstPost.Text)</div>
             <em>(@messagesCount @(messagesCount == 1 ? "message" : "messages"))</em>
         </div>
     </div>
@@ -29,7 +29,7 @@
         <div class="post-container">
             <div class='post' data-link='#'>
                 <div class="post-header">@data.Post.Username @data.Post.Timestamp #@(data.Index+1) No.@data.Post.Id</div>
-                <div class="post-message">@data.Post.Text</div>
+                <div class="post-message">@Html.Raw(data.Post.Text)</div>
             </div>
         </div>
     }

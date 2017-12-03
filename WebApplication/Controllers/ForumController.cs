@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Newtonsoft.Json;
@@ -16,14 +17,24 @@ namespace WebApplication.Controllers
         private readonly BoardsRepo boards = new BoardsRepo();
         private readonly ThreadsRepo threads = new ThreadsRepo();
         private readonly PostsRepo posts = new PostsRepo();
+        private readonly VisitsRepo visits = new VisitsRepo();
 
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            return View(boards.GetBoards());
+            var userId = Request.Cookies["auth"]?["id"];
+            await UpdateVisitStatistics(userId);
+            var allBoards = boards.GetBoards();
+            var pageStatistics = visits.GetPageStatistics("Forum");
+            var visit = default(VisitModel);
+            if (Request.Cookies["auth"] != null)
+                visit = visits.GetVisit(Request.Cookies["auth"]["id"]);
+            return View(Tuple.Create(allBoards, pageStatistics, visit));
         }
 
         public async Task<ActionResult> Board(string boardId)
         {
+            var userId = Request.Cookies["auth"]?["id"];
+            await UpdateVisitStatistics(userId);
             var board = await boards.GetBoard(boardId);
             var boardThreads = threads.GetThreads(boardId).ToList();
             foreach (var thread in boardThreads)
@@ -37,6 +48,8 @@ namespace WebApplication.Controllers
 
         public async Task<ActionResult> Thread(int threadId)
         {
+            var userId = Request.Cookies["auth"]?["id"];
+            await UpdateVisitStatistics(userId);
             var thread = threads.GetThread(threadId);
             var threadPosts = posts.GetPosts(thread.Id).ToList();
             thread.Posts = threadPosts;
@@ -62,7 +75,7 @@ namespace WebApplication.Controllers
             await posts.AddPost(new PostModel
             {
                 ThreadId = thread.Id,
-                Text = text,
+                Text = ValidateHtml(text),
                 Username = name,
                 Topic = subject,
                 Timestamp = DateTime.Now,
@@ -81,7 +94,7 @@ namespace WebApplication.Controllers
             await posts.AddPost(new PostModel
             {
                 ThreadId = threadId,
-                Text = text,
+                Text = ValidateHtml(text),
                 Username = name,
                 Timestamp = DateTime.Now,
                 UserId = User.Identity.GetUserId()
@@ -114,6 +127,36 @@ namespace WebApplication.Controllers
             });
         }
 
+        public async Task UpdateVisitStatistics(string userId)
+        {
+            if (Session["counterUpdated"] is bool && (bool)Session["counterUpdated"] != true)
+            {
+                await visits.AddOrUpdateStatistics("Forum");
+                Session["counterUpdated"] = true;
+                return;
+            }
+            if (userId != null)
+            {
+                await visits.AddOrUpdateVisit(
+                    new VisitModel
+                    {
+                        UserId = userId,
+                        LastVisit = DateTime.Now
+                    });
+            }
+        }
+
+        public string ValidateHtml(string raw)
+        {
+            var withNewLines = HttpUtility.HtmlEncode(raw.Replace(Environment.NewLine, "<br />"));
+            var unescapedNewLines = withNewLines.Replace("&lt;br /&gt;", "<br />");
+            var unescapedItalic = unescapedNewLines.Replace("&lt;em&gt;", "<em>").Replace("&lt;/em&gt;", "</em>");
+            var unescapedBold = unescapedItalic.Replace("&lt;b&gt;", "<b>").Replace("&lt;/b&gt;", "</b>");
+            // <strike>
+            // <u>
+            return unescapedBold;
+        }
+
         public bool CheckCaptcha()
         {
             var response = Request["g-recaptcha-response"];
@@ -124,11 +167,6 @@ namespace WebApplication.Controllers
             var captchaResponse = JsonConvert.DeserializeObject<CaptchaResponse>(reply);
 
             return captchaResponse.Success;
-        }
-
-        public static string ToHtmlString(string s)
-        {
-            return MvcHtmlString.Create(s).ToString();
         }
     }
 }

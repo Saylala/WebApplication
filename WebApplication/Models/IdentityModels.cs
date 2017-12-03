@@ -23,6 +23,8 @@ namespace WebApplication.Models
         public DbSet<BoardModel> Boards { get; set; }
         public DbSet<ThreadModel> Threads { get; set; }
         public DbSet<PostModel> Posts { get; set; }
+        public DbSet<VisitModel> Visits { get; set; }
+        public DbSet<PageStatisticsModel> PageStatistics { get; set; }
 
         public ApplicationDbContext() : base("DefaultConnection", throwIfV1Schema: false)
         {

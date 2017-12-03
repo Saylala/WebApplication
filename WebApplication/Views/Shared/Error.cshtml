@@ -1,4 +1,5 @@
-﻿@{
+﻿@model WebApplication.Models.ErrorModel
+@{
     ViewBag.Title = "Error";
 }
 
@@ -10,9 +11,9 @@
                     Oops!
                 </h1>
                 <h2>
-                    404 Not Found
+                    @Model.Error
                 </h2>
-                Sorry, an error has occured. Requested page not found!
+                Sorry, an error has occured. @Model.Description
             </div>
         </div>
     </div>

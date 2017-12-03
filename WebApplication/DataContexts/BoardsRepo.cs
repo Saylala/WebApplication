@@ -45,17 +45,5 @@ namespace WebApplication.DataContexts
                             .Select(err => err.PropertyName + " " + err.ErrorMessage)));
             }
         }
-
-        public async Task DeleteBoard(string boardId)
-        {
-            var threads = db.Threads.Where(t => t.BoardId == boardId).ToList();
-            var posts = db.Posts.Where(p => threads.Any(t => t.Id == p.ThreadId));
-            db.Posts.RemoveRange(posts);
-            db.Threads.RemoveRange(threads);
-            var board = db.Boards.Find(boardId);
-            if (board != null)
-                db.Boards.Remove(board);
-            await db.SaveChangesAsync();
-        }
     }
 }

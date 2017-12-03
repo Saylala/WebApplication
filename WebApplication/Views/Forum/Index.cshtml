@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WebApplication.Models.BoardModel>
+﻿@model Tuple<IEnumerable<WebApplication.Models.BoardModel>, WebApplication.Models.PageStatisticsModel, WebApplication.Models.VisitModel>
 
 @{
     ViewBag.Title = "Forum";
@@ -6,9 +6,25 @@
 @Styles.Render("~/Styles/forum")
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
+<ul class="list-group col-md-4 col-md-offset-4">
+    <li class="list-group-item">
+        <span class="badge">@(Model.Item2?.AllVisits ?? 1)</span>
+        All visits
+    </li>
+    <li class="list-group-item">
+        <span class="badge">@(Model.Item2?.VisitsToday ?? 1)</span>
+        Visits today
+    </li>
+    <li class="list-group-item">
+        <span class="badge">@(Model.Item3?.LastVisit ?? DateTime.Now)</span>
+        Last visit
+    </li>
+</ul>
+
 <div class="col-md-6 col-md-offset-3">
+    Boards
     <div class="list-group">
-        @foreach (var b in Model)
+        @foreach (var b in Model.Item1)
         {
             <a class="list-group-item" href="@Url.Action("Board", "Forum", new {boardId = b.ShortName})">@($"{b.Name}")</a>
         }
