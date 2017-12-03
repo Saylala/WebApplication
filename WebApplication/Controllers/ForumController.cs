@@ -78,7 +78,7 @@ namespace WebApplication.Controllers
                 Text = ValidateHtml(text),
                 Username = name,
                 Topic = subject,
-                Timestamp = DateTime.Now,
+                Timestamp = DateTime.UtcNow,
                 UserId = User.Identity.GetUserId()
             });
             return RedirectToAction("Board", new { boardId = boardId });
@@ -96,7 +96,7 @@ namespace WebApplication.Controllers
                 ThreadId = threadId,
                 Text = ValidateHtml(text),
                 Username = name,
-                Timestamp = DateTime.Now,
+                Timestamp = DateTime.UtcNow,
                 UserId = User.Identity.GetUserId()
             });
             return RedirectToAction("Thread", new { threadId = threadId });
@@ -141,7 +141,7 @@ namespace WebApplication.Controllers
                     new VisitModel
                     {
                         UserId = userId,
-                        LastVisit = DateTime.Now
+                        LastVisit = DateTime.UtcNow
                     });
             }
         }

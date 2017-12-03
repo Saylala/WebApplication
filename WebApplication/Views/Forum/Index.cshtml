@@ -16,7 +16,7 @@
         Visits today
     </li>
     <li class="list-group-item">
-        <span class="badge">@(Model.Item3?.LastVisit ?? DateTime.Now)</span>
+        <span class="badge">@(Model.Item3?.LastVisit ?? DateTime.UtcNow)</span>
         Last visit
     </li>
 </ul>

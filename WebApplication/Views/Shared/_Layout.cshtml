@@ -9,7 +9,6 @@
     @Styles.Render("~/Styles/custom")
 </head>
 <body id="background">
-    @*@Html.Partial("_MetricsPartial")*@
     <div class="navbar navbar-default navbar-static-top">
         <div class="container">
             <ul class="nav navbar-nav">
@@ -24,7 +23,7 @@
     </div>
     <footer class="footer">
         <div class="container">
-            <p>&copy; @DateTime.Now.Year - Some useless footer.</p>
+            <p>&copy; @DateTime.UtcNow.Year - Some useless footer.</p>
         </div>
     </footer>
 </body>
