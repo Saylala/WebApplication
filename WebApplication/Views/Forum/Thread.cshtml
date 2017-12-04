@@ -1,10 +1,10 @@
 ﻿@model WebApplication.Models.ThreadModel
 
 @{
-    ViewBag.Title = Model.BoardName + " - " + Model.Posts.First().Topic;
+    ViewBag.Title = "/" + Model.BoardName + "/ - " + Model.Posts.First().Topic;
 }
 @Styles.Render("~/Styles/forum")
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script src="https://www.google.com/recaptcha/api.js?hl=en" async defer></script>
 
 <a href="@Url.Action("Board", new {boardId = Model.BoardId})">[Back]</a>
 <hr />
@@ -64,5 +64,5 @@
 </div>
 
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/Scripts/forum")
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/Scripts/forum")

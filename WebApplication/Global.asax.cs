@@ -16,18 +16,21 @@ namespace WebApplication
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
 
+        protected void Application_Error(object sender, EventArgs e)
+        {
+            var exception = Server.GetLastError();
+        }
+
         protected void Session_Start()
         {
             // Some crutch so that Session_End would fire
             Session["dummy"] = 0;
             Session["counterUpdated"] = false;
 
-            if (Response.Cookies["auth"] == null)
+            if (Response.Cookies["auth"] == null || Response.Cookies["auth"].Value == null)
             {
                 var id = Guid.NewGuid();
-                var cookie = new HttpCookie("auth");
-                cookie.Values.Add("id", id.ToString());
-                cookie.Expires = DateTime.MaxValue;
+                var cookie = new HttpCookie("auth", id.ToString()) {Expires = DateTime.MaxValue};
                 Response.Cookies.Add(cookie);
             }
         }

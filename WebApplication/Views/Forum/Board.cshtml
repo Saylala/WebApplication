@@ -1,10 +1,10 @@
 ﻿@model WebApplication.Models.BoardModel
 
 @{
-    ViewBag.Title = Model.Name;
+    ViewBag.Title = "/" + Model.ShortName + "/ - " + Model.Name;
 }
 @Styles.Render("~/Styles/forum")
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script src="https://www.google.com/recaptcha/api.js?hl=en" async defer></script>
 
 <a href="@Url.Action("Index")">[Back]</a>
 
@@ -21,7 +21,7 @@
         <div class='post first-post' data-link='#'>
             <div class="post-header"><b>@firstPost.Topic</b> @firstPost.Username @firstPost.Timestamp No.@firstPost.Id</div>
             <div class="post-message">@Html.Raw(firstPost.Text)</div>
-            <em>(@messagesCount @(messagesCount == 1 ? "message" : "messages"))</em>
+            <div class="text-muted">@(messagesCount - 1) @(messagesCount - 1 == 1 ? "reply" : "replies")</div>
         </div>
     </div>
     foreach (var data in thread.Posts.Select((e, i) => new {Index = i, Post = e}).Skip(1).Skip(messagesCount > 4 ? messagesCount - 4 : 0))
@@ -41,7 +41,7 @@
     {
         <fieldset>
             <legend>Start a New Thread</legend>
-            <input type="hidden" name="boardId" value="@Model.ShortName"/> Name
+            <input type="hidden" name="boardId" value="@Model.ShortName"/>
             <div class="form-group">
                 <label for="name" class="col-lg-2 control-label">Name</label>
                 <div class="col-lg-10">

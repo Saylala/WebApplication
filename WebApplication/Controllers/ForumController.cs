@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -21,20 +22,22 @@ namespace WebApplication.Controllers
 
         public async Task<ActionResult> Index()
         {
-            var userId = Request.Cookies["auth"]?["id"];
-            await UpdateVisitStatistics(userId);
             var allBoards = boards.GetBoards();
             var pageStatistics = visits.GetPageStatistics("Forum");
-            var visit = default(VisitModel);
-            if (Request.Cookies["auth"] != null)
-                visit = visits.GetVisit(Request.Cookies["auth"]["id"]);
-            return View(Tuple.Create(allBoards, pageStatistics, visit));
+            var lastVisit = DateTime.Now;
+            if (Request.Cookies["auth"] != null && Request.Cookies["auth"].Value != null)
+            {
+                var visit = visits.GetVisit(Request.Cookies["auth"].Value);
+                lastVisit = visit?.LastVisit ?? DateTime.Now;
+            }
+
+            var userId = Request.Cookies["auth"]?.Value;
+            await UpdateVisitStatistics(userId);
+            return View(Tuple.Create(allBoards, pageStatistics, lastVisit));
         }
 
         public async Task<ActionResult> Board(string boardId)
         {
-            var userId = Request.Cookies["auth"]?["id"];
-            await UpdateVisitStatistics(userId);
             var board = await boards.GetBoard(boardId);
             var boardThreads = threads.GetThreads(boardId).ToList();
             foreach (var thread in boardThreads)
@@ -43,17 +46,21 @@ namespace WebApplication.Controllers
                 thread.Posts = threadPosts;
             }
             board.Threads = boardThreads;
+
+            var userId = Request.Cookies["auth"]?.Value;
+            await UpdateVisitStatistics(userId);
             return View(board);
         }
 
         public async Task<ActionResult> Thread(int threadId)
         {
-            var userId = Request.Cookies["auth"]?["id"];
-            await UpdateVisitStatistics(userId);
             var thread = threads.GetThread(threadId);
             var threadPosts = posts.GetPosts(thread.Id).ToList();
             thread.Posts = threadPosts;
-            thread.BoardName = (await boards.GetBoard(thread.BoardId)).Name;
+            thread.BoardName = (await boards.GetBoard(thread.BoardId)).ShortName;
+
+            var userId = Request.Cookies["auth"]?.Value;
+            await UpdateVisitStatistics(userId);
             return View(thread);
         }
 
@@ -150,11 +157,21 @@ namespace WebApplication.Controllers
         {
             var withNewLines = HttpUtility.HtmlEncode(raw.Replace(Environment.NewLine, "<br />"));
             var unescapedNewLines = withNewLines.Replace("&lt;br /&gt;", "<br />");
-            var unescapedItalic = unescapedNewLines.Replace("&lt;em&gt;", "<em>").Replace("&lt;/em&gt;", "</em>");
-            var unescapedBold = unescapedItalic.Replace("&lt;b&gt;", "<b>").Replace("&lt;/b&gt;", "</b>");
+            var unescapedItalic = UnescapePairedTag(unescapedNewLines, "em");
+            var unescapedBold = UnescapePairedTag(unescapedItalic, "b");
             // <strike>
             // <u>
             return unescapedBold;
+        }
+
+        private string UnescapePairedTag(string raw, string tag)
+        {
+            var openingTags = Regex.Matches(raw, $"&lt;{tag}&gt;");
+            var closingTags = Regex.Matches(raw, $"&lt;/{tag}&gt;");
+            var unescaped = raw.Replace($"&lt;{tag}&gt;", $"<{tag}>").Replace($"&lt;/{tag}&gt;", $"</{tag}>");
+            if (openingTags.Count > closingTags.Count)
+                unescaped += string.Concat(Enumerable.Repeat($"</{tag}>", openingTags.Count - closingTags.Count));
+            return unescaped;
         }
 
         public bool CheckCaptcha()
