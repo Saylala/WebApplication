@@ -9,12 +9,8 @@
 <a href="@Url.Action("Index")">[Back]</a>
 
 <hr />
-@foreach (var thread in Model.Threads)
+@foreach (var thread in Model.Threads.Where(x => x.Posts.Any()).OrderByDescending(x => x.Posts.First().Timestamp))
 {
-    if (!thread.Posts.Any())
-    {
-        continue;
-    }
     var firstPost = thread.Posts.First();
     var messagesCount = thread.Posts.Count();
     <div class="post-container clickable" data-link="@Url.Action("Thread", "Forum", new {threadId = thread.Id})">
