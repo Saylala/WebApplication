@@ -37,3 +37,8 @@
 .post-header {
     margin: 4px;
 }
+
+.counter {
+    font-size: 16px;
+    border-radius: 0;
+}

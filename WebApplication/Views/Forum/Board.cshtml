@@ -14,7 +14,7 @@
     var firstPost = thread.Posts.First();
     var messagesCount = thread.Posts.Count();
     <div class="post-container clickable" data-link="@Url.Action("Thread", "Forum", new {threadId = thread.Id})">
-        <div class='post first-post' data-link='#'>
+        <div class="post first-post">
             <div class="post-header"><b>@firstPost.Topic</b> @firstPost.Username @firstPost.Timestamp No.@firstPost.Id</div>
             <div class="post-message">@Html.Raw(firstPost.Text)</div>
             <div class="text-muted">@(messagesCount - 1) @(messagesCount - 1 == 1 ? "reply" : "replies")</div>
@@ -23,7 +23,7 @@
     foreach (var data in thread.Posts.Select((e, i) => new {Index = i, Post = e}).Skip(1).Skip(messagesCount > 4 ? messagesCount - 4 : 0))
     {
         <div class="post-container">
-            <div class='post' data-link='#'>
+            <div class="post">
                 <div class="post-header">@data.Post.Username @data.Post.Timestamp #@(data.Index+1) No.@data.Post.Id</div>
                 <div class="post-message">@Html.Raw(data.Post.Text)</div>
             </div>
@@ -70,5 +70,5 @@
     }
 </div>
 
-@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/Scripts/jquery")
 @Scripts.Render("~/Scripts/forum")

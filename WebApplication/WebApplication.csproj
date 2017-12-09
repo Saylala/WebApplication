@@ -174,9 +174,10 @@
     <Compile Include="Controllers\GalleryController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="DataContexts\BoardsRepo.cs" />
+    <Compile Include="DataContexts\UsersInfoRepo.cs" />
     <Compile Include="DataContexts\PostsRepo.cs" />
     <Compile Include="DataContexts\ThreadsRepo.cs" />
-    <Compile Include="DataContexts\VisitsRepo.cs" />
+    <Compile Include="DataContexts\PageStatisticsRepo.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -188,7 +189,7 @@
     <Compile Include="Models\PageStatisticsModel.cs" />
     <Compile Include="Models\PostModel.cs" />
     <Compile Include="Models\ThreadModel.cs" />
-    <Compile Include="Models\VisitModel.cs" />
+    <Compile Include="Models\UserInfoModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -209,6 +210,7 @@
     <Content Include="Images\Photo.jpg" />
     <Content Include="Scripts\forum.js" />
     <Content Include="Scripts\gallery.js" />
+    <Content Include="Scripts\screen.js" />
     <Content Include="Styles\bootstrap.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />

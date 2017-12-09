@@ -1,4 +1,4 @@
-﻿@model Tuple<IEnumerable<WebApplication.Models.BoardModel>, WebApplication.Models.PageStatisticsModel, DateTime>
+﻿@model Tuple<IEnumerable<WebApplication.Models.BoardModel>, WebApplication.Models.PageStatisticsModel, WebApplication.Models.UserInfoModel>
 
 @{
     ViewBag.Title = "Forum";
@@ -7,16 +7,55 @@
 
 <ul class="list-group col-md-4 col-md-offset-4">
     <li class="list-group-item">
-        <span class="badge">@(Model.Item2?.AllVisits ?? 1)</span>
+        @{
+            foreach (var symbol in (Model.Item2 == null ? "1" : Model.Item2.AllVisits.ToString()).Reverse())
+            {
+                <span class="badge counter">@symbol</span>
+            }
+        }
         All visits
     </li>
     <li class="list-group-item">
-        <span class="badge">@(Model.Item2?.VisitsToday ?? 1)</span>
+        @{
+            foreach (var symbol in (Model.Item2 == null ? "1" : Model.Item2.AllHits.ToString()).Reverse())
+            {
+                <span class="badge counter">@symbol</span>
+            }
+        }
+        All hits
+    </li>
+    <li class="list-group-item">
+        @{
+            foreach (var symbol in (Model.Item2 == null ? "1" : Model.Item2.VisitsToday.ToString()).Reverse())
+            {
+                <span class="badge counter">@symbol</span>
+            }
+        }
         Visits today
     </li>
     <li class="list-group-item">
-        <span class="badge">@Model.Item3</span>
+        @{
+            foreach (var symbol in (Model.Item2 == null ? "1" : Model.Item2.HitsToday.ToString()).Reverse())
+            {
+                <span class="badge counter">@symbol</span>
+            }
+        }
+        Hits today
+    </li>
+</ul>
+
+<ul class="list-group col-md-4 col-md-offset-4">
+    <li class="list-group-item">
+        <span class="badge">@(Model.Item3 == null ? DateTime.UtcNow + TimeSpan.FromHours(5) : Model.Item3.LastVisit)</span>
         Last visit
+    </li>
+    <li class="list-group-item">
+        <span class="badge">@(Model.Item3 == null ? "unknown" : Model.Item3.BrowserInfo)</span>
+        Browser
+    </li>
+    <li class="list-group-item">
+        <span class="badge">@(Model.Item3 == null ? "unknown" : Model.Item3.ResolutionWidth)x@(Model.Item3 == null ? "unknown" : Model.Item3.ResolutionHeight)</span>
+        Resolution
     </li>
 </ul>
 

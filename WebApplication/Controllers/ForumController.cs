@@ -18,22 +18,17 @@ namespace WebApplication.Controllers
         private readonly BoardsRepo boards = new BoardsRepo();
         private readonly ThreadsRepo threads = new ThreadsRepo();
         private readonly PostsRepo posts = new PostsRepo();
-        private readonly VisitsRepo visits = new VisitsRepo();
+        private readonly PageStatisticsRepo pageStatistics = new PageStatisticsRepo();
+        private readonly UsersInfoRepo usersInfo = new UsersInfoRepo();
 
         public async Task<ActionResult> Index()
         {
             var allBoards = boards.GetBoards();
-            var pageStatistics = visits.GetPageStatistics("Forum");
-            var lastVisit = DateTime.Now;
-            if (Request.Cookies["auth"] != null && Request.Cookies["auth"].Value != null)
-            {
-                var visit = visits.GetVisit(Request.Cookies["auth"].Value);
-                lastVisit = visit?.LastVisit ?? DateTime.Now;
-            }
+            var statistics = pageStatistics.GetPageStatistics("Forum");
 
-            var userId = Request.Cookies["auth"]?.Value;
-            await UpdateVisitStatistics(userId);
-            return View(Tuple.Create(allBoards, pageStatistics, lastVisit));
+            var info = GetUserInfo();
+            await UpdateVisitStatistics(info);
+            return View(Tuple.Create(allBoards, statistics, info));
         }
 
         public async Task<ActionResult> Board(string boardId)
@@ -47,8 +42,8 @@ namespace WebApplication.Controllers
             }
             board.Threads = boardThreads;
 
-            var userId = Request.Cookies["auth"]?.Value;
-            await UpdateVisitStatistics(userId);
+            var info = GetUserInfo();
+            await UpdateVisitStatistics(info);
             return View(board);
         }
 
@@ -59,8 +54,8 @@ namespace WebApplication.Controllers
             thread.Posts = threadPosts;
             thread.BoardName = (await boards.GetBoard(thread.BoardId)).ShortName;
 
-            var userId = Request.Cookies["auth"]?.Value;
-            await UpdateVisitStatistics(userId);
+            var info = GetUserInfo();
+            await UpdateVisitStatistics(info);
             return View(thread);
         }
 
@@ -85,7 +80,7 @@ namespace WebApplication.Controllers
                 Text = ValidateHtml(text),
                 Username = name,
                 Topic = subject,
-                Timestamp = DateTime.UtcNow,
+                Timestamp = DateTime.UtcNow + TimeSpan.FromHours(5),
                 UserId = User.Identity.GetUserId()
             });
             return RedirectToAction("Board", new { boardId = boardId });
@@ -103,7 +98,7 @@ namespace WebApplication.Controllers
                 ThreadId = threadId,
                 Text = ValidateHtml(text),
                 Username = name,
-                Timestamp = DateTime.UtcNow,
+                Timestamp = DateTime.UtcNow + TimeSpan.FromHours(5),
                 UserId = User.Identity.GetUserId()
             });
             return RedirectToAction("Thread", new { threadId = threadId });
@@ -134,23 +129,41 @@ namespace WebApplication.Controllers
             });
         }
 
-        public async Task UpdateVisitStatistics(string userId)
+        public async Task UpdateVisitStatistics(UserInfoModel info)
         {
-            if (Session["counterUpdated"] is bool && (bool)Session["counterUpdated"] != true)
-            {
-                await visits.AddOrUpdateStatistics("Forum");
+            var newVisit = Session["counterUpdated"] is bool && (bool) Session["counterUpdated"] != true;
+            await pageStatistics.AddOrUpdateStatistics("Forum", newVisit);
+            if (newVisit)
                 Session["counterUpdated"] = true;
-                return;
-            }
-            if (userId != null)
-            {
-                await visits.AddOrUpdateVisit(
-                    new VisitModel
+            if (info != null && info.UserId != null)
+                await usersInfo.AddOrUpdateInfo(
+                    new UserInfoModel
                     {
-                        UserId = userId,
-                        LastVisit = DateTime.UtcNow
+                        UserId = info.UserId,
+                        BrowserInfo = info.BrowserInfo,
+                        ResolutionWidth = info.ResolutionWidth,
+                        ResolutionHeight = info.ResolutionHeight,
+                        LastVisit = DateTime.UtcNow + TimeSpan.FromHours(5)
                     });
+        }
+
+        private UserInfoModel GetUserInfo()
+        {
+            var info = new UserInfoModel
+            {
+                UserId = Request.Cookies["auth"]?.Value,
+                LastVisit = DateTime.UtcNow + TimeSpan.FromHours(5)
+            };
+            if (Request.Cookies["auth"] != null && Request.Cookies["auth"].Value != null)
+            {
+                var visit = usersInfo.GetInfo(Request.Cookies["auth"].Value);
+                if (visit != null)
+                    info.LastVisit = visit.LastVisit;
             }
+            info.BrowserInfo = $"{Request.Browser.Browser} {Request.Browser.Version}";
+            info.ResolutionWidth = Request.Cookies["width"]?.Value;
+            info.ResolutionHeight = Request.Cookies["height"]?.Value;
+            return info;
         }
 
         public string ValidateHtml(string raw)
@@ -159,8 +172,6 @@ namespace WebApplication.Controllers
             var unescapedNewLines = withNewLines.Replace("&lt;br /&gt;", "<br />");
             var unescapedItalic = UnescapePairedTag(unescapedNewLines, "em");
             var unescapedBold = UnescapePairedTag(unescapedItalic, "b");
-            // <strike>
-            // <u>
             return unescapedBold;
         }
 
