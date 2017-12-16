@@ -82,9 +82,9 @@ namespace WebApplication.Controllers
 
         [HttpPost]
         [ValidateInput(false)]
-        public async Task<ActionResult> AddPost(int threadId, string name, string text)
+        public async Task<ActionResult> AddPost(int threadId, string name, string text, string captchaResponse)
         {
-            if (!CheckCaptcha())
+            if (!CheckCaptcha(captchaResponse))
                 return RedirectToAction("Thread", new { threadId = threadId });
             name = name == "" ? "Anonymous" : name;
             await posts.AddPost(new PostModel
@@ -110,16 +110,14 @@ namespace WebApplication.Controllers
                 });
             return Json(new
             {
-                Posts = newPosts.Skip(currentCount).Select(p => new
+                Posts = newPosts.Select((p, i) => new
                 {
-                    UserId = p.UserId,
                     Id = p.Id,
-                    Timestamp = p.Timestamp.ToString(CultureInfo.InvariantCulture),
-                    Topic = p.Topic,
+                    Timestamp = p.Timestamp.ToString("dd-MM-yyyy HH:mm:ss"),
+                    Username = p.Username,
+                    Index = i + 1,
                     Text = p.Text,
-                    ThreadId = p.ThreadId
-                }),
-                UserId = User.Identity.GetUserId(),
+                }).Skip(currentCount),
             });
         }
 
@@ -179,9 +177,9 @@ namespace WebApplication.Controllers
             return unescaped;
         }
 
-        public bool CheckCaptcha()
+        public bool CheckCaptcha(string response = null)
         {
-            var response = Request["g-recaptcha-response"];
+            response = response ?? Request["g-recaptcha-response"];
             const string secret = "6LecXTsUAAAAABJD0BSVjJyFJ0YCXSGhwzwrukRO";
             var client = new WebClient();
             var reply = client.DownloadString($"https://www.google.com/recaptcha/api/siteverify?secret={secret}&response={response}");

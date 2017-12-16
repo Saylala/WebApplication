@@ -4,6 +4,8 @@
     ViewBag.Title = "/" + Model.BoardName + "/ - " + Model.Posts.First().Topic;
 }
 @Styles.Render("~/Styles/forum")
+@Scripts.Render("~/Scripts/ajax")
+@Scripts.Render("~/Scripts/ajax-update-thread")
 <script src="https://www.google.com/recaptcha/api.js?hl=en" async defer></script>
 
 <a href="@Url.Action("Board", new {boardId = Model.BoardId})">[Back]</a>
@@ -12,15 +14,15 @@
     var firstPost = Model.Posts.First();
     <div class="post-container">
         <div class="post first-post">
-            <div class="post-header"><b>@firstPost.Topic</b> @firstPost.Username @firstPost.Timestamp No.@firstPost.Id</div>
+            <div class="post-header"><b>@firstPost.Topic</b> @firstPost.Username @firstPost.Timestamp.ToString("dd-MM-yyyy HH:mm:ss") No.@firstPost.Id</div>
             <div class="post-message">@Html.Raw(firstPost.Text)</div>
         </div>
     </div>
-    foreach (var data in Model.Posts.Select((e, i) => new {Index = i, Post = e}).Skip(1))
+    foreach (var data in Model.Posts.Select((e, i) => new { Index = i, Post = e }).Skip(1))
     {
         <div class="post-container">
             <div class="post">
-                <div class="post-header">@data.Post.Username @data.Post.Timestamp #@(data.Index+1) No.@data.Post.Id</div>
+                <div class="post-header">@data.Post.Username @data.Post.Timestamp.ToString("dd-MM-yyyy HH:mm:ss") #@(data.Index + 1) No.@data.Post.Id</div>
                 <div class="post-message">@Html.Raw(data.Post.Text)</div>
             </div>
         </div>
@@ -32,7 +34,7 @@
 
 
 <div class="well col-md-6 col-md-offset-3">
-    @using (Html.BeginForm("AddPost", "Forum", FormMethod.Post, new { @class = "form-horizontal" }))
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "form", @class = "form-horizontal" }))
     {
         <fieldset>
             <legend>Reply to thread No.@Model.Posts.First().Id</legend>
@@ -62,7 +64,3 @@
         </fieldset>
     }
 </div>
-
-
-@Scripts.Render("~/Scripts/jquery")
-@Scripts.Render("~/Scripts/forum")

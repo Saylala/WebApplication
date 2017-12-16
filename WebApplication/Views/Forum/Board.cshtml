@@ -4,6 +4,7 @@
     ViewBag.Title = "/" + Model.ShortName + "/ - " + Model.Name;
 }
 @Styles.Render("~/Styles/forum")
+@Scripts.Render("~/Scripts/forum")
 <script src="https://www.google.com/recaptcha/api.js?hl=en" async defer></script>
 
 <a href="@Url.Action("Index")">[Back]</a>
@@ -15,21 +16,21 @@
     var messagesCount = thread.Posts.Count();
     <div class="post-container clickable" data-link="@Url.Action("Thread", "Forum", new {threadId = thread.Id})">
         <div class="post first-post">
-            <div class="post-header"><b>@firstPost.Topic</b> @firstPost.Username @firstPost.Timestamp No.@firstPost.Id</div>
+            <div class="post-header"><b>@firstPost.Topic</b> @firstPost.Username @firstPost.Timestamp.ToString("dd-MM-yyyy HH:mm:ss") No.@firstPost.Id</div>
             <div class="post-message">@Html.Raw(firstPost.Text)</div>
             <div class="text-muted">@(messagesCount - 1) @(messagesCount - 1 == 1 ? "reply" : "replies")</div>
         </div>
     </div>
-    foreach (var data in thread.Posts.Select((e, i) => new {Index = i, Post = e}).Skip(1).Skip(messagesCount > 4 ? messagesCount - 4 : 0))
+    foreach (var data in thread.Posts.Select((e, i) => new { Index = i, Post = e }).Skip(1).Skip(messagesCount > 4 ? messagesCount - 4 : 0))
     {
         <div class="post-container">
             <div class="post">
-                <div class="post-header">@data.Post.Username @data.Post.Timestamp #@(data.Index+1) No.@data.Post.Id</div>
+                <div class="post-header">@data.Post.Username @data.Post.Timestamp.ToString("dd-MM-yyyy HH:mm:ss") #@(data.Index + 1) No.@data.Post.Id</div>
                 <div class="post-message">@Html.Raw(data.Post.Text)</div>
             </div>
         </div>
     }
-    <hr/>
+    <hr />
 }
 
 <div class="well col-md-6 col-md-offset-3">
@@ -37,7 +38,7 @@
     {
         <fieldset>
             <legend>Start a New Thread</legend>
-            <input type="hidden" name="boardId" value="@Model.ShortName"/>
+            <input type="hidden" name="boardId" value="@Model.ShortName" />
             <div class="form-group">
                 <label for="name" class="col-lg-2 control-label">Name</label>
                 <div class="col-lg-10">
@@ -69,6 +70,3 @@
         </fieldset>
     }
 </div>
-
-@Scripts.Render("~/Scripts/jquery")
-@Scripts.Render("~/Scripts/forum")

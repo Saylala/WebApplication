@@ -208,6 +208,8 @@
     <Content Include="Images\6.jpg" />
     <Content Include="Images\6_thumbnail.jpg" />
     <Content Include="Images\Photo.jpg" />
+    <Content Include="Scripts\ajax-update-thread.js" />
+    <Content Include="Scripts\ajax.js" />
     <Content Include="Scripts\forum.js" />
     <Content Include="Scripts\gallery.js" />
     <Content Include="Scripts\screen.js" />
@@ -219,9 +221,6 @@
     <Content Include="fonts\fontawesome-webfont.ttf" />
     <Content Include="fonts\fontawesome-webfont.woff" />
     <Content Include="fonts\fontawesome-webfont.woff2" />
-    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
-    <Content Include="Scripts\jquery-1.10.2.js" />
-    <Content Include="Scripts\jquery-1.10.2.min.js" />
     <Content Include="Styles\custom.css" />
     <Content Include="Styles\font-awesome.css" />
     <Content Include="Styles\forum.css" />
@@ -252,7 +251,6 @@
     <Content Include="packages.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
