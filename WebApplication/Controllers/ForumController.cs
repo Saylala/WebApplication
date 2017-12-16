@@ -41,9 +41,6 @@ namespace WebApplication.Controllers
                 thread.Posts = threadPosts;
             }
             board.Threads = boardThreads;
-
-            var info = GetUserInfo();
-            await UpdateVisitStatistics(info);
             return View(board);
         }
 
@@ -53,9 +50,6 @@ namespace WebApplication.Controllers
             var threadPosts = posts.GetPosts(thread.Id).ToList();
             thread.Posts = threadPosts;
             thread.BoardName = (await boards.GetBoard(thread.BoardId)).ShortName;
-
-            var info = GetUserInfo();
-            await UpdateVisitStatistics(info);
             return View(thread);
         }
 
