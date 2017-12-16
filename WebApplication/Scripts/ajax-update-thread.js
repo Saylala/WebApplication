@@ -10,6 +10,8 @@
             function (rawResponse) {
                 var answer = JSON.parse(rawResponse);
                 var posts = document.querySelectorAll(".post");
+                if (posts.length !== answer.Count)
+                    return;
                 for (var i = 0; i < answer.Posts.length; i++) {
                     var header = answer.Posts[i].Username + " " + answer.Posts[i].Timestamp + " #" + answer.Posts[i].Index + " " + "No." + answer.Posts[i].Id;
                     posts[posts.length - 1].insertAdjacentHTML("afterend",
@@ -44,11 +46,11 @@ function postReply(event) {
             text: event.target[3].value,
             captchaResponse: grecaptcha.getResponse()
         },
-        function (rawResponse) {
+        function(rawResponse) {
             reset(event.target);
             ajaxUpdate(rawResponse);
-        });
-    console.log(event);
+        }
+    );
 }
 
 function handler() {

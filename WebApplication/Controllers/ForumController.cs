@@ -77,7 +77,7 @@ namespace WebApplication.Controllers
                 Timestamp = DateTime.UtcNow + TimeSpan.FromHours(5),
                 UserId = User.Identity.GetUserId()
             });
-            return RedirectToAction("Board", new { boardId = boardId });
+            return RedirectToAction("Thread", new { threadId = thread.Id });
         }
 
         [HttpPost]
@@ -106,7 +106,7 @@ namespace WebApplication.Controllers
                 return Json(new
                 {
                     Posts = new PostModel[0],
-                    UserId = User.Identity.GetUserId(),
+                    Count = currentCount
                 });
             return Json(new
             {
@@ -118,6 +118,7 @@ namespace WebApplication.Controllers
                     Index = i + 1,
                     Text = p.Text,
                 }).Skip(currentCount),
+                Count = currentCount
             });
         }
 

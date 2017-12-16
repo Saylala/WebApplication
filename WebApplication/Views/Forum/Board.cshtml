@@ -10,7 +10,7 @@
 <a href="@Url.Action("Index")">[Back]</a>
 
 <hr />
-@foreach (var thread in Model.Threads.Where(x => x.Posts.Any()).OrderByDescending(x => x.Posts.First().Timestamp))
+@foreach (var thread in Model.Threads.Where(x => x.Posts.Any()).OrderByDescending(x => x.Posts.Max(y => y.Timestamp)))
 {
     var firstPost = thread.Posts.First();
     var messagesCount = thread.Posts.Count();
