@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -64,9 +63,9 @@ namespace WebApplication.Controllers
         [ValidateInput(false)]
         public async Task<ActionResult> AddThread(string boardId, string name, string subject, string text)
         {
-            if (!CheckCaptcha())
+            if (!CheckCaptcha() || IsEmptyField(subject) || IsEmptyField(text))
                 return RedirectToAction("Board", new { boardId = boardId });
-            name = name == "" ? "Anonymous" : name;
+            name = IsEmptyField(name) ? "Anonymous" : name;
             var thread = await threads.AddThread(new ThreadModel { BoardId = boardId });
             await posts.AddPost(new PostModel
             {
@@ -84,9 +83,9 @@ namespace WebApplication.Controllers
         [ValidateInput(false)]
         public async Task<ActionResult> AddPost(int threadId, string name, string text, string captchaResponse)
         {
-            if (!CheckCaptcha(captchaResponse))
+            if (!CheckCaptcha(captchaResponse) || IsEmptyField(text))
                 return RedirectToAction("Thread", new { threadId = threadId });
-            name = name == "" ? "Anonymous" : name;
+            name = IsEmptyField(name) ? "Anonymous" : name;
             await posts.AddPost(new PostModel
             {
                 ThreadId = threadId,
@@ -96,6 +95,11 @@ namespace WebApplication.Controllers
                 UserId = User.Identity.GetUserId()
             });
             return RedirectToAction("Thread", new { threadId = threadId });
+        }
+
+        private static bool IsEmptyField(string value)
+        {
+            return value.Length == 0 || value.All(char.IsWhiteSpace);
         }
 
         [HttpPost]

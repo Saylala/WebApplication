@@ -37,6 +37,19 @@ body {
     text-align: center;
 }
 
+.counters {
+    height: 55px;
+}
+
+.digits {
+    height: 53px;
+    width: 33px;
+    display: block;
+    position: absolute;
+    margin: 0;
+    top: 0;
+    padding: 0;
+}
 
 @media (min-width: 2560px) {
     body {
